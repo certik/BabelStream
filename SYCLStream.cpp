@@ -91,9 +91,8 @@ void SYCLStream<T>::copy()
   {
     auto ka = d_a->template get_access<access::mode::read>(cgh);
     auto kc = d_c->template get_access<access::mode::write>(cgh);
-    cgh.parallel_for<copy_kernel>(nd_range<1>{array_size,LOCAL_SIZE}, [=](nd_item<1> it)
+    cgh.parallel_for<copy_kernel>(range<1>{array_size}, [=](id<1> idx)
     {
-      const auto idx = it.get_global_id(0);
       kc[idx] = ka[idx];
     });
   });
@@ -108,9 +107,8 @@ void SYCLStream<T>::mul()
   {
     auto kb = d_b->template get_access<access::mode::write>(cgh);
     auto kc = d_c->template get_access<access::mode::read>(cgh);
-    cgh.parallel_for<mul_kernel>(nd_range<1>{array_size,LOCAL_SIZE}, [=](nd_item<1> it)
+    cgh.parallel_for<mul_kernel>(range<1>{array_size}, [=](id<1> idx)
     {
-      const auto idx = it.get_global_id(0);
       kb[idx] = scalar * kc[idx];
     });
   });
@@ -125,9 +123,8 @@ void SYCLStream<T>::add()
     auto ka = d_a->template get_access<access::mode::read>(cgh);
     auto kb = d_b->template get_access<access::mode::read>(cgh);
     auto kc = d_c->template get_access<access::mode::write>(cgh);
-    cgh.parallel_for<add_kernel>(nd_range<1>{array_size,LOCAL_SIZE}, [=](nd_item<1> it)
+    cgh.parallel_for<add_kernel>(range<1>{array_size}, [=](id<1> idx)
     {
-      const auto idx = it.get_global_id(0);
       kc[idx] = ka[idx] + kb[idx];
     });
   });
@@ -144,6 +141,74 @@ void SYCLStream<T>::triad()
     auto kb = d_b->template get_access<access::mode::read>(cgh);
     auto kc = d_c->template get_access<access::mode::read>(cgh);
     cgh.parallel_for<triad_kernel>(nd_range<1>{array_size,LOCAL_SIZE}, [=](nd_item<1> it)
+    {
+      const auto idx = it.get_global_id(0);
+      ka[idx] = kb[idx] + scalar * kc[idx];
+    });
+  });
+  queue->wait();
+}
+
+template <class T>
+void SYCLStream<T>::copy_nd()
+{
+  queue->submit([&](handler &cgh)
+  {
+    auto ka = d_a->template get_access<access::mode::read>(cgh);
+    auto kc = d_c->template get_access<access::mode::write>(cgh);
+    cgh.parallel_for<copy_nd_kernel>(nd_range<1>{array_size,LOCAL_SIZE}, [=](nd_item<1> it)
+    {
+      const auto idx = it.get_global_id(0);
+      kc[idx] = ka[idx];
+    });
+  });
+  queue->wait();
+}
+
+template <class T>
+void SYCLStream<T>::mul_nd()
+{
+  const T scalar = startScalar;
+  queue->submit([&](handler &cgh)
+  {
+    auto kb = d_b->template get_access<access::mode::write>(cgh);
+    auto kc = d_c->template get_access<access::mode::read>(cgh);
+    cgh.parallel_for<mul_nd_kernel>(nd_range<1>{array_size,LOCAL_SIZE}, [=](nd_item<1> it)
+    {
+      const auto idx = it.get_global_id(0);
+      kb[idx] = scalar * kc[idx];
+    });
+  });
+  queue->wait();
+}
+
+template <class T>
+void SYCLStream<T>::add_nd()
+{
+  queue->submit([&](handler &cgh)
+  {
+    auto ka = d_a->template get_access<access::mode::read>(cgh);
+    auto kb = d_b->template get_access<access::mode::read>(cgh);
+    auto kc = d_c->template get_access<access::mode::write>(cgh);
+    cgh.parallel_for<add_nd_kernel>(nd_range<1>{array_size,LOCAL_SIZE}, [=](nd_item<1> it)
+    {
+      const auto idx = it.get_global_id(0);
+      kc[idx] = ka[idx] + kb[idx];
+    });
+  });
+  queue->wait();
+}
+
+template <class T>
+void SYCLStream<T>::triad_nd()
+{
+  const T scalar = startScalar;
+  queue->submit([&](handler &cgh)
+  {
+    auto ka = d_a->template get_access<access::mode::write>(cgh);
+    auto kb = d_b->template get_access<access::mode::read>(cgh);
+    auto kc = d_c->template get_access<access::mode::read>(cgh);
+    cgh.parallel_for<triad_nd_kernel>(nd_range<1>{array_size,LOCAL_SIZE}, [=](nd_item<1> it)
     {
       const auto idx = it.get_global_id(0);
       ka[idx] = kb[idx] + scalar * kc[idx];
@@ -205,9 +270,9 @@ void SYCLStream<T>::init_arrays(T initA, T initB, T initC)
     auto ka = d_a->template get_access<access::mode::write>(cgh);
     auto kb = d_b->template get_access<access::mode::write>(cgh);
     auto kc = d_c->template get_access<access::mode::write>(cgh);
-    cgh.parallel_for<init_kernel>(nd_range<1>{array_size,LOCAL_SIZE}, [=](nd_item<1> item)
+    cgh.parallel_for<init_kernel>(range<1>{array_size}, [=](item<1> item)
     {
-      const auto id = item.get_global_id(0);
+      auto id = item.get_id(0);
       ka[id] = initA;
       kb[id] = initB;
       kc[id] = initC;
