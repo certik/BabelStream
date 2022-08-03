@@ -101,8 +101,10 @@ module BabelStreamUtil
         end subroutine parseArguments
 
         subroutine run_all(timings, summ)
-#if (IMPLEMENTATION_STRING == DoConcurrent)
-    use DoConcurrentStream
+#if defined(USE_DOCONCURRENT)
+            use DoConcurrentStream
+#elif defined(USE_ARRAY)
+            use ArrayStream
 #endif
             implicit none
             real(kind=REAL64), intent(inout) :: timings(:,:)
@@ -142,8 +144,10 @@ module BabelStreamUtil
         end subroutine run_all
 
         subroutine run_triad(timings)
-#if (IMPLEMENTATION_STRING == DoConcurrent)
-    use DoConcurrentStream
+#if defined(USE_DOCONCURRENT)
+            use DoConcurrentStream
+#elif defined(USE_ARRAY)
+            use ArrayStream
 #endif
             implicit none
             real(kind=REAL64), intent(inout) :: timings(:,:)
@@ -162,8 +166,10 @@ module BabelStreamUtil
         end subroutine run_triad
 
         subroutine run_nstream(timings)
-#if (IMPLEMENTATION_STRING == DoConcurrent)
-    use DoConcurrentStream
+#if defined(USE_DOCONCURRENT)
+            use DoConcurrentStream
+#elif defined(USE_ARRAY)
+            use ArrayStream
 #endif
             implicit none
             real(kind=REAL64), intent(inout) :: timings(:,:)
@@ -247,8 +253,10 @@ end module BabelStreamUtil
 
 program BabelStream
     use BabelStreamUtil
-#if (IMPLEMENTATION_STRING == DoConcurrent)
+#if defined(USE_DOCONCURRENT)
     use DoConcurrentStream
+#elif defined(USE_ARRAY)
+    use ArrayStream
 #endif
     implicit none
     integer :: element_size, err
