@@ -105,6 +105,8 @@ module BabelStreamUtil
             use DoConcurrentStream
 #elif defined(USE_ARRAY)
             use ArrayStream
+#else
+            use SequentialStream
 #endif
             implicit none
             real(kind=REAL64), intent(inout) :: timings(:,:)
@@ -148,6 +150,8 @@ module BabelStreamUtil
             use DoConcurrentStream
 #elif defined(USE_ARRAY)
             use ArrayStream
+#else
+            use SequentialStream
 #endif
             implicit none
             real(kind=REAL64), intent(inout) :: timings(:,:)
@@ -170,6 +174,8 @@ module BabelStreamUtil
             use DoConcurrentStream
 #elif defined(USE_ARRAY)
             use ArrayStream
+#else
+            use SequentialStream
 #endif
             implicit none
             real(kind=REAL64), intent(inout) :: timings(:,:)
@@ -257,6 +263,8 @@ program BabelStream
     use DoConcurrentStream
 #elif defined(USE_ARRAY)
     use ArrayStream
+#else
+            use SequentialStream
 #endif
     implicit none
     integer :: element_size, err
