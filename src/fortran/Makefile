@@ -30,7 +30,7 @@ BabelStreamTypes.mod: BabelStreamTypes.F90
 
 clean:
 	-rm -f BabelStream
-	-rm -f main.o
+	-rm -f main.o BabelStreamUtil.mod
 	-rm -f BabelStreamTypes.o   BabelStreamTypes.mod
 	-rm -f DoConcurrentStream.o DoConcurrentStream.mod
 	-rm -f ArrayStream.o ArrayStream.mod
