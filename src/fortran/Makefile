@@ -10,8 +10,11 @@ FCFLAGS += -DVERSION_STRING="4.0"
 #FCFLAGS += -DUSE_ARRAY
 #IMPLEMENTATION_OBJECT = ArrayStream.o
 
-FCFLAGS += -DUSE_SEQUENTIAL # default
-IMPLEMENTATION_OBJECT = SequentialStream.o
+FCFLAGS += -fopenacc -DUSE_OPENACC
+IMPLEMENTATION_OBJECT = OpenACCStream.o
+
+#FCFLAGS += -DUSE_SEQUENTIAL # default
+#IMPLEMENTATION_OBJECT = SequentialStream.o
 
 BabelStream: main.F90 $(IMPLEMENTATION_OBJECT)
 	$(FC) $(FCFLAGS) $^ -o $@
@@ -25,6 +28,9 @@ ArrayStream.o: ArrayStream.F90 BabelStreamTypes.mod
 SequentialStream.o: SequentialStream.F90 BabelStreamTypes.mod
 	$(FC) $(FCFLAGS) -c $<
 
+OpenACCStream.o: OpenACCStream.F90 BabelStreamTypes.mod
+	$(FC) $(FCFLAGS) -c $<
+
 BabelStreamTypes.mod: BabelStreamTypes.F90
 	$(FC) $(FCFLAGS) -c $<
 
@@ -35,4 +41,5 @@ clean:
 	-rm -f DoConcurrentStream.o DoConcurrentStream.mod
 	-rm -f ArrayStream.o ArrayStream.mod
 	-rm -f SequentialStream.o SequentialStream.mod
+	-rm -f OpenACCStream.o OpenACCStream.mod
 

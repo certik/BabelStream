@@ -105,6 +105,8 @@ module BabelStreamUtil
             use DoConcurrentStream
 #elif defined(USE_ARRAY)
             use ArrayStream
+#elif defined(USE_OPENACC)
+            use OpenACCStream
 #else
             use SequentialStream
 #endif
@@ -150,6 +152,8 @@ module BabelStreamUtil
             use DoConcurrentStream
 #elif defined(USE_ARRAY)
             use ArrayStream
+#elif defined(USE_OPENACC)
+            use OpenACCStream
 #else
             use SequentialStream
 #endif
@@ -174,6 +178,8 @@ module BabelStreamUtil
             use DoConcurrentStream
 #elif defined(USE_ARRAY)
             use ArrayStream
+#elif defined(USE_OPENACC)
+            use OpenACCStream
 #else
             use SequentialStream
 #endif
@@ -263,8 +269,10 @@ program BabelStream
     use DoConcurrentStream
 #elif defined(USE_ARRAY)
     use ArrayStream
+#elif defined(USE_OPENACC)
+    use OpenACCStream
 #else
-            use SequentialStream
+    use SequentialStream
 #endif
     implicit none
     integer :: element_size, err
