@@ -4,7 +4,7 @@ module ArrayStream
 
     implicit none
 
-    character*(*), parameter :: implementation_name = "Array"
+    character(len=5), parameter :: implementation_name = "Array"
 
     integer(kind=StreamIntKind) :: N
 

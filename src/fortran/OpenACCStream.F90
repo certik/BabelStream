@@ -4,7 +4,7 @@ module OpenACCStream
 
     implicit none
 
-    character*(*), parameter :: implementation_name = "OpenACC"
+    character(len=7), parameter :: implementation_name = "OpenACC"
 
     integer(kind=StreamIntKind) :: N
 

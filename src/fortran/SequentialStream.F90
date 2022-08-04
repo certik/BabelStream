@@ -4,7 +4,7 @@ module SequentialStream
 
     implicit none
 
-    character*(*), parameter :: implementation_name = "Sequential"
+    character(len=10), parameter :: implementation_name = "Sequential"
 
     integer(kind=StreamIntKind) :: N
 
