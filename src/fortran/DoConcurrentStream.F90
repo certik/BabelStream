@@ -4,7 +4,7 @@ module DoConcurrentStream
 
     implicit none
 
-    character*(*), parameter :: implementation_name = "DoConcurrent"
+    character(len=12), parameter :: implementation_name = "DoConcurrent"
 
     integer(kind=StreamIntKind) :: N
 

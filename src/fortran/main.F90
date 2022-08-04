@@ -289,7 +289,6 @@ program BabelStream
     write(*,'(a16,a)') "Implementation: ", implementation_name
 
     write(*,'(a16,i9,a6)') 'Running kernels ',num_times,' times'
-    write(*,'(a11,i12)')   'Array Size=', array_size
 
     element_size = storage_size(real(0,kind=REAL64)) / 8
     if (mibibytes) then
@@ -300,8 +299,8 @@ program BabelStream
         label   = "MB"
     endif
 
-    write(*,'(a12,e9.3,a4)') 'Array size: ',1.0d0 * array_size * element_size * scaling, label
-    write(*,'(a12,e9.3,a4)') 'Total size: ',3.0d0 * array_size * element_size * scaling, label
+    write(*,'(a12,f9.1,a4)') 'Array size: ',1.0d0 * array_size * element_size * scaling, label
+    write(*,'(a12,f9.1,a4)') 'Total size: ',3.0d0 * array_size * element_size * scaling, label
 
     allocate( timings(5,num_times) )
 
