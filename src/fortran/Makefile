@@ -2,6 +2,8 @@ ifeq ($(COMPILER),nvhpc)
     include make.inc.nvhpc
 else ifeq ($(COMPILER),oneapi)
     include make.inc.oneapi
+else ifeq ($(COMPILER),gcc)
+    include make.inc.gcc
 else
     $(info Set COMPILER={nvhpc,oneapi}. Default is gcc.)
     include make.inc.gcc
@@ -18,6 +20,9 @@ else ifeq ($(IMPLEMENTATION),Array)
 else ifeq ($(IMPLEMENTATION),OpenACC)
     FCFLAGS += -DUSE_OPENACC $(OPENACC_FLAG)
     IMPLEMENTATION_OBJECT = OpenACCStream.o
+else ifeq ($(IMPLEMENTATION),Sequential)
+    FCFLAGS += -DUSE_SEQUENTIAL $(SEQUENTIAL_FLAG)
+    IMPLEMENTATION_OBJECT = SequentialStream.o
 else
     $(info Set IMPLEMENTATION={DoConcurrent,Array,OpenACC}. Default is Sequential.)
     FCFLAGS += -DUSE_SEQUENTIAL $(SEQUENTIAL_FLAG)
