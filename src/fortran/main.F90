@@ -7,6 +7,7 @@ module BabelStreamUtil
     integer(kind=StreamIntKind) :: array_size = 33554432
     integer(kind=StreamIntKind) :: num_times  = 100
     logical                     :: mibibytes  = .false.
+    logical                     :: csv        = .false.
 
     ! 1 = All
     ! 2 = Triad
@@ -112,13 +113,6 @@ module BabelStreamUtil
                         stop
                     endif
                     !
-                    ! units
-                    !
-                    pos(1) = index(argtmp,"--mibibytes")
-                    if (pos(1).gt.0) then
-                        mibibytes = .true.
-                    endif
-                    !
                     ! selection (All, Triad, Nstream)
                     !
                     pos(1) = index(argtmp,"--triad-only")
@@ -128,6 +122,22 @@ module BabelStreamUtil
                     pos(1) = index(argtmp,"--nstream-only")
                     if (pos(1).gt.0) then
                         selection = 3
+                    endif
+                    !
+                    ! CSV
+                    !
+                    pos(1) = index(argtmp,"--csv")
+                    if (pos(1).gt.0) then
+                        csv = .true.
+                        write(*,'(a39)') "Sorry, CSV support isn't available yet."
+                        stop
+                    endif
+                    !
+                    ! units
+                    !
+                    pos(1) = index(argtmp,"--mibibytes")
+                    if (pos(1).gt.0) then
+                        mibibytes = .true.
                     endif
                     !
                     ! help
