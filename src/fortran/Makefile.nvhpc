@@ -1,17 +1,19 @@
-FC	:= gfortran
-FCFLAGS	:= -std=f2018 -Wall -O1
+FC	:= nvfortran
+FCFLAGS	:= -O3
+
+# Orin, because reasons
+FCFLAGS += -gpu=ccn87,cc86
 
 FCFLAGS += -DVERSION_STRING="4.0"
 
-
-#FCFLAGS += -DUSE_DOCONCURRENT
+#FCFLAGS += -DUSE_DOCONCURRENT -stdpar=gpu
 #IMPLEMENTATION_OBJECT = DoConcurrentStream.o
 
-#FCFLAGS += -DUSE_ARRAY
-#IMPLEMENTATION_OBJECT = ArrayStream.o
+FCFLAGS += -DUSE_ARRAY -stdpar=gpu
+IMPLEMENTATION_OBJECT = ArrayStream.o
 
-FCFLAGS += -fopenacc -DUSE_OPENACC
-IMPLEMENTATION_OBJECT = OpenACCStream.o
+#FCFLAGS += -DUSE_OPENACC -acc
+#IMPLEMENTATION_OBJECT = OpenACCStream.o
 
 #FCFLAGS += -DUSE_SEQUENTIAL # default
 #IMPLEMENTATION_OBJECT = SequentialStream.o
