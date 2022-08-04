@@ -1,0 +1,10 @@
+FC	:= nvfortran
+FCFLAGS	:= -O3 -Minform=inform
+
+#FCFLAGS += -gpu=ccn87,cc86
+FCFLAGS += -gpu=cc75
+
+DOCONCURRENT_FLAG   = -stdpar=gpu
+ARRAY_FLAG          = -stdpar=gpu
+OPENACC_FLAG        = -acc=gpu
+SEQUENTIAL_FLAG     =

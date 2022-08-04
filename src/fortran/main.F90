@@ -288,7 +288,12 @@ program BabelStream
     write(*,'(a9,f4.1)')  "Version: ", VERSION_STRING
     write(*,'(a16,a)') "Implementation: ", implementation_name
 
-    write(*,'(a16,i9,a6)') 'Running kernels ',num_times,' times'
+    block
+      character(len=32) :: printout
+      write(printout,'(i9,1x,a5)') num_times,'times'
+      write(*,'(a16,a)') 'Running kernels ',ADJUSTL(printout)
+    end block
+    write(*,'(a11,a6)') 'Precision: ',ADJUSTL(StreamRealName)
 
     element_size = storage_size(real(0,kind=REAL64)) / 8
     if (mibibytes) then

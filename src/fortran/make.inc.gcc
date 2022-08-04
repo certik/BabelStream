@@ -1,0 +1,7 @@
+FC	:= gfortran
+FCFLAGS	:= -std=f2018 -Wall -O3
+
+DOCONCURRENT_FLAG   =
+ARRAY_FLAG          =
+OPENACC_FLAG        = -fopenacc
+SEQUENTIAL_FLAG     =

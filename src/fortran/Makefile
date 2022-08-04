@@ -1,22 +1,29 @@
-FC	:= gfortran
-FCFLAGS	:= -std=f2018 -Wall -O3
+ifeq ($(COMPILER),nvhpc)
+    include make.inc.nvhpc
+else ifeq ($(COMPILER),oneapi)
+    include make.inc.oneapi
+else
+    $(info Set COMPILER={nvhpc,oneapi}. Default is gcc.)
+    include make.inc.gcc
+endif
 
 FCFLAGS += -DVERSION_STRING="4.0"
 
-#FCFLAGS += -DUSE_DOCONCURRENT
-#IMPLEMENTATION_OBJECT = DoConcurrentStream.o
+FCFLAGS += -DUSE_DOCONCURRENT $(DOCONCURRENT_FLAG)
+IMPLEMENTATION_OBJECT = DoConcurrentStream.o
 
-#FCFLAGS += -DUSE_ARRAY
+#FCFLAGS += -DUSE_ARRAY $(ARRAY_FLAG)
 #IMPLEMENTATION_OBJECT = ArrayStream.o
 
-#FCFLAGS += -DUSE_OPENACC -fopenacc
+#FCFLAGS += -DUSE_OPENACC $(OPENACC_FLAG)
 #IMPLEMENTATION_OBJECT = OpenACCStream.o
 
-FCFLAGS += -DUSE_SEQUENTIAL # default
-IMPLEMENTATION_OBJECT = SequentialStream.o
+# default
+#FCFLAGS += -DUSE_SEQUENTIAL $(SEQUENTIAL_FLAG)
+#IMPLEMENTATION_OBJECT = SequentialStream.o
 
 BabelStream: main.F90 $(IMPLEMENTATION_OBJECT)
-	$(FC) $(FCFLAGS) $^ -o $@
+	$(FC) $(FCFLAGS) $^ BabelStreamTypes.o -o $@
 
 DoConcurrentStream.o: DoConcurrentStream.F90 BabelStreamTypes.mod
 	$(FC) $(FCFLAGS) -c $<
@@ -30,7 +37,7 @@ SequentialStream.o: SequentialStream.F90 BabelStreamTypes.mod
 OpenACCStream.o: OpenACCStream.F90 BabelStreamTypes.mod
 	$(FC) $(FCFLAGS) -c $<
 
-BabelStreamTypes.mod: BabelStreamTypes.F90
+BabelStreamTypes.o BabelStreamTypes.mod: BabelStreamTypes.F90
 	$(FC) $(FCFLAGS) -c $<
 
 clean:

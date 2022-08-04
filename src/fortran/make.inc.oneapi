@@ -1,0 +1,7 @@
+FC	:= ifort
+FCFLAGS	:= -std18 -warn all -Ofast
+
+DOCONCURRENT_FLAG   = -parallel
+ARRAY_FLAG          = -parallel
+OPENACC_FLAG        = Not Supported
+SEQUENTIAL_FLAG     =
