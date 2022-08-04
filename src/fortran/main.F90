@@ -56,7 +56,7 @@ module BabelStreamUtil
                         stop
                     endif
                     !
-                    ! device
+                    ! set device number
                     !
                     pos(1) = index(argtmp,"--device")
                     if (pos(1).gt.0) then
@@ -96,7 +96,20 @@ module BabelStreamUtil
                         else
                             call get_command_argument(i+1,argtmp,arglen,err)
                             read(argtmp,'(i15)') num_times
+                            if (num_times.lt.2) then
+                                write(*,'(a)') "Number of times must be 2 or more"
+                                stop
+                            end if
                         endif
+                    endif
+                    !
+                    ! precision
+                    !
+                    pos(1) = index(argtmp,"--float")
+                    if (pos(1).gt.0) then
+                        write(*,'(a46,a39)') "Sorry, you have to recompile with -DUSE_FLOAT ", &
+                                             "to run BabelStream in single precision."
+                        stop
                     endif
                     !
                     ! units
