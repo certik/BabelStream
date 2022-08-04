@@ -12,6 +12,18 @@ module DoConcurrentStream
 
     contains
 
+        subroutine list_devices()
+            implicit none
+            integer :: num
+            write(*,'(a36,a12)') "Listing devices is not supported by ", implementation_name
+        end subroutine list_devices
+
+        subroutine set_device(dev)
+            implicit none
+            integer, intent(in) :: dev
+            write(*,'(a32,a12)') "Device != 0 is not supported by ", implementation_name
+        end subroutine set_device
+
         subroutine alloc(array_size)
             implicit none
             integer(kind=StreamIntKind) :: array_size

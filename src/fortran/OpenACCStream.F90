@@ -12,6 +12,35 @@ module OpenACCStream
 
     contains
 
+        subroutine list_devices()
+            use openacc
+            implicit none
+            integer :: num
+            num = acc_get_num_devices(acc_get_device_type())
+            if (num.eq.0) then
+              write(*,'(a17)') "No devices found."
+            else
+              write(*,'(a10,i1,a8)') "There are ",num," devices."
+            end if
+        end subroutine list_devices
+
+        subroutine set_device(dev)
+            use openacc
+            implicit none
+            integer, intent(in) :: dev
+            integer :: num
+            num = acc_get_num_devices(acc_get_device_type())
+            if (num.eq.0) then
+              write(*,'(a17)') "No devices found."
+              stop
+            else if (dev.gt.num) then
+              write(*,'(a21)') "Invalid device index."
+              stop
+            else
+              call acc_set_device_num(dev, acc_get_device_type())
+            end if
+        end subroutine set_device
+
         subroutine alloc(array_size)
             implicit none
             integer(kind=StreamIntKind) :: array_size

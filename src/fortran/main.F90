@@ -30,6 +30,15 @@ module BabelStreamUtil
         end function get_wtime
 
         subroutine parseArguments()
+#if defined(USE_DOCONCURRENT)
+            use DoConcurrentStream!, only list_devices
+#elif defined(USE_ARRAY)
+            use ArrayStream!, only list_devices
+#elif defined(USE_OPENACC)
+            use OpenACCStream!, only list_devices
+#else
+            use SequentialStream!, only list_devices
+#endif
             implicit none
             integer :: i, argc
             integer :: arglen,err,pos(2)
@@ -39,11 +48,36 @@ module BabelStreamUtil
                 call get_command_argument(i,argtmp,arglen,err)
                 if (err.eq.0) then
                     !
+                    ! list devices
+                    !
+                    pos(1) = index(argtmp,"--list")
+                    if (pos(1).gt.0) then
+                        call list_devices()
+                        stop
+                    endif
+                    !
+                    ! device
+                    !
+                    pos(1) = index(argtmp,"--device")
+                    if (pos(1).gt.0) then
+                        if (i+1.gt.argc) then
+                            print*,'You failed to provide a value for ',argtmp
+                            stop
+                        else
+                            call get_command_argument(i+1,argtmp,arglen,err)
+                            block
+                                integer :: dev
+                                read(argtmp,'(i15)') dev
+                                call set_device(dev)
+                            end block
+                        endif
+                    endif
+                    !
                     ! array size
                     !
                     pos(1) = index(argtmp,"--arraysize")
                     pos(2) = index(argtmp,"-s")
-                    if ( any(pos(:).gt.0) ) then
+                    if (any(pos(:).gt.0) ) then
                         if (i+1.gt.argc) then
                             print*,'You failed to provide a value for ',argtmp
                         else
@@ -56,7 +90,7 @@ module BabelStreamUtil
                     !
                     pos(1) = index(argtmp,"--numtimes")
                     pos(2) = index(argtmp,"-n")
-                    if ( any(pos(:).gt.0) ) then
+                    if (any(pos(:).gt.0) ) then
                         if (i+1.gt.argc) then
                             print*,'You failed to provide a value for ',argtmp
                         else
@@ -68,18 +102,18 @@ module BabelStreamUtil
                     ! units
                     !
                     pos(1) = index(argtmp,"--mibibytes")
-                    if ( pos(1).gt.0) then
+                    if (pos(1).gt.0) then
                         mibibytes = .true.
                     endif
                     !
                     ! selection (All, Triad, Nstream)
                     !
                     pos(1) = index(argtmp,"--triad-only")
-                    if ( pos(1).gt.0) then
+                    if (pos(1).gt.0) then
                         selection = 2
                     endif
                     pos(1) = index(argtmp,"--nstream-only")
-                    if ( pos(1).gt.0) then
+                    if (pos(1).gt.0) then
                         selection = 3
                     endif
                     !
@@ -87,7 +121,7 @@ module BabelStreamUtil
                     !
                     pos(1) = index(argtmp,"--help")
                     pos(2) = index(argtmp,"-h")
-                    if ( any(pos(:).gt.0) ) then
+                    if (any(pos(:).gt.0) ) then
                         call get_command_argument(0,argtmp,arglen,err)
                         write(*,'(a7,a,a10)') "Usage: ", trim(argtmp), " [OPTIONS]"
                         write(*,'(a)') "Options:"
