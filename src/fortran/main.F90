@@ -277,7 +277,7 @@ program BabelStream
     implicit none
     integer :: element_size, err
     real(kind=REAL64) :: scaling
-    character*3 :: label
+    character(len=3) :: label
     real(kind=REAL64), allocatable :: timings(:,:)
     real(kind=REAL64), allocatable :: h_A(:), h_B(:), h_C(:)
     real(kind=REAL64) :: summ
@@ -329,7 +329,7 @@ program BabelStream
     call check_solution(h_A, h_B, h_C, summ)
 
     block
-      character*12      :: printout(5)
+      character(len=12) :: printout(5)
       real(kind=REAL64) :: tmin,tmax,tavg,nbytes
       
       write(printout(1),'(a8)')   'Function'
@@ -342,7 +342,7 @@ program BabelStream
       if (selection.eq.1) then
         block
           integer, parameter :: sizes(5) = [2,2,3,3,2]
-          character*5, parameter :: labels(5) = ["Copy", "Mul", "Add", "Triad", "Dot"]
+          character(len=5), parameter :: labels(5) = ["Copy ", "Mul  ", "Add  ", "Triad", "Dot  "]
           integer :: i
           do i=1,5
             tmin = MINVAL(timings(i,2:num_times))
