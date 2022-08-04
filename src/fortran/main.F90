@@ -276,6 +276,8 @@ program BabelStream
 #endif
     implicit none
     integer :: element_size, err
+    real(kind=REAL64) :: scaling
+    character*3 :: label
     real(kind=REAL64), allocatable :: timings(:,:)
     real(kind=REAL64), allocatable :: h_A(:), h_B(:), h_C(:)
     real(kind=REAL64) :: summ
@@ -288,14 +290,18 @@ program BabelStream
 
     write(*,'(a16,i9,a6)') 'Running kernels ',num_times,' times'
     write(*,'(a11,i12)')   'Array Size=', array_size
+
     element_size = storage_size(real(0,kind=REAL64)) / 8
     if (mibibytes) then
-        write(*,'(a12,e9.3,a4)') 'Array size: ',1.0d0 * array_size * element_size * 2.0d0**(-20),' MiB'
-        write(*,'(a12,e9.3,a4)') 'Total size: ',3.0d0 * array_size * element_size * 2.0d0**(-20),' MiB'
+        scaling = 2.0d0**(-20)
+        label   = "MiB"
     else
-        write(*,'(a12,e9.3,a4)') 'Array size: ',1.0d0 * array_size * element_size * 1.0d-6,' MB'
-        write(*,'(a12,e9.3,a4)') 'Total size: ',3.0d0 * array_size * element_size * 1.0d-6,' MB'
+        scaling = 1.0d-6
+        label   = "MB"
     endif
+
+    write(*,'(a12,e9.3,a4)') 'Array size: ',1.0d0 * array_size * element_size * scaling, label
+    write(*,'(a12,e9.3,a4)') 'Total size: ',3.0d0 * array_size * element_size * scaling, label
 
     allocate( timings(5,num_times) )
 
@@ -304,6 +310,7 @@ program BabelStream
     call init_arrays(startA, startB, startC)
     summ = 0.0d0
 
+    timings = -1.0d0
     if (selection.eq.1) then
         call run_all(timings, summ)
     else if (selection.eq.2) then
@@ -320,6 +327,54 @@ program BabelStream
 
     call read_arrays(h_A, h_B, h_C)
     call check_solution(h_A, h_B, h_C, summ)
+
+    block
+      character*12      :: printout(5)
+      real(kind=REAL64) :: tmin,tmax,tavg,nbytes
+      
+      write(printout(1),'(a8)')   'Function'
+      write(printout(2),'(a3,a8)') TRIM(label),'ytes/sec'
+      write(printout(3),'(a9)')   'Min (sec)'
+      write(printout(4),'(a3)')   'Max'
+      write(printout(5),'(a7)')   'Average'
+      write(*,'(5a12)') ADJUSTL(printout(1:5))
+    
+      if (selection.eq.1) then
+        block
+          integer, parameter :: sizes(5) = [2,2,3,3,2]
+          character*5, parameter :: labels(5) = ["Copy", "Mul", "Add", "Triad", "Dot"]
+          integer :: i
+          do i=1,5
+            tmin = MINVAL(timings(i,2:num_times))
+            tmax = MAXVAL(timings(i,2:num_times))
+            tavg = SUM(timings(i,2:num_times)) / num_times
+            nbytes = element_size * array_size * sizes(i)
+            write(printout(1),'(a12)')   labels(i)
+            write(printout(2),'(f12.3)') scaling*nbytes/tmin
+            write(printout(3),'(f12.5)') tmin
+            write(printout(4),'(f12.5)') tmax
+            write(printout(5),'(f12.5)') tavg
+            write(*,'(5a12)') ADJUSTL(printout(1:5))
+          enddo
+        end block
+      else if ((selection.eq.2).or.(selection.eq.3)) then
+            tmin = MINVAL(timings(1,2:num_times))
+            tmax = MAXVAL(timings(1,2:num_times))
+            tavg = SUM(timings(1,2:num_times)) / num_times
+            if (selection.eq.2) then
+              nbytes = element_size * array_size * 3
+              write(printout(1),'(a12)')   "Triad"
+            else if (selection.eq.3) then
+              nbytes = element_size * array_size * 4
+              write(printout(1),'(a12)')   "Nstream"
+            endif
+            write(printout(2),'(f12.3)') scaling*nbytes/tmin
+            write(printout(3),'(f12.5)') tmin
+            write(printout(4),'(f12.5)') tmax
+            write(printout(5),'(f12.5)') tavg
+            write(*,'(5a12)') ADJUSTL(printout(1:5))
+      endif
+    end block
 
     call dealloc()
 
