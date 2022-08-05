@@ -20,6 +20,9 @@ else ifeq ($(IMPLEMENTATION),Array)
 else ifeq ($(IMPLEMENTATION),OpenACC)
     FCFLAGS += -DUSE_OPENACC $(OPENACC_FLAG)
     IMPLEMENTATION_OBJECT = OpenACCStream.o
+else ifeq ($(IMPLEMENTATION),OpenACCArray)
+    FCFLAGS += -DUSE_OPENACCARRAY $(OPENACC_FLAG)
+    IMPLEMENTATION_OBJECT = OpenACCArrayStream.o
 else ifeq ($(IMPLEMENTATION),Sequential)
     FCFLAGS += -DUSE_SEQUENTIAL $(SEQUENTIAL_FLAG)
     IMPLEMENTATION_OBJECT = SequentialStream.o
@@ -32,27 +35,19 @@ endif
 BabelStream: main.F90 $(IMPLEMENTATION_OBJECT)
 	$(FC) $(FCFLAGS) $^ BabelStreamTypes.o -o $@
 
-DoConcurrentStream.o: DoConcurrentStream.F90 BabelStreamTypes.mod
-	$(FC) $(FCFLAGS) -c $<
-
-ArrayStream.o: ArrayStream.F90 BabelStreamTypes.mod
-	$(FC) $(FCFLAGS) -c $<
-
-SequentialStream.o: SequentialStream.F90 BabelStreamTypes.mod
-	$(FC) $(FCFLAGS) -c $<
-
-OpenACCStream.o: OpenACCStream.F90 BabelStreamTypes.mod
-	$(FC) $(FCFLAGS) -c $<
-
 BabelStreamTypes.o BabelStreamTypes.mod: BabelStreamTypes.F90
+	$(FC) $(FCFLAGS) -c $<
+
+%.o: %.F90 BabelStreamTypes.mod
 	$(FC) $(FCFLAGS) -c $<
 
 clean:
 	-rm -f BabelStream
-	-rm -f main.o BabelStreamUtil.mod
-	-rm -f BabelStreamTypes.o   BabelStreamTypes.mod
-	-rm -f DoConcurrentStream.o DoConcurrentStream.mod
-	-rm -f ArrayStream.o ArrayStream.mod
-	-rm -f SequentialStream.o SequentialStream.mod
-	-rm -f OpenACCStream.o OpenACCStream.mod
+	-rm -f main.o BabelStreamUtil.mod babelstreamutil.mod
+	-rm -f BabelStreamTypes.o BabelStreamTypes.mod babelstreamtypes.mod
+	-rm -f DoConcurrentStream.o DoConcurrentStream.mod doconcurrentstream.mod
+	-rm -f ArrayStream.o ArrayStream.mod arraystream.mod
+	-rm -f SequentialStream.o SequentialStream.mod sequentialstream.mod
+	-rm -f OpenACCStream.o OpenACCStream.mod openaccstream.mod
+	-rm -f OpenACCArrayStream.o OpenACCArrayStream.mod openaccarraystream.mod
 
