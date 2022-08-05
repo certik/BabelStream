@@ -66,7 +66,7 @@ module BabelStreamUtil
                     ! list devices
                     !
                     pos(1) = index(argtmp,"--list")
-                    if (pos(1).gt.0) then
+                    if (pos(1).eq.1) then
                         call list_devices()
                         stop
                     endif
@@ -74,9 +74,9 @@ module BabelStreamUtil
                     ! set device number
                     !
                     pos(1) = index(argtmp,"--device")
-                    if (pos(1).gt.0) then
+                    if (pos(1).eq.1) then
                         if (i+1.gt.argc) then
-                            print*,'You failed to provide a value for ',argtmp
+                            print*,'You failed to provide a value for ',argtmp,'SHIT'
                             stop
                         else
                             call get_command_argument(i+1,argtmp,arglen,err)
@@ -86,26 +86,28 @@ module BabelStreamUtil
                                 call set_device(dev)
                             end block
                         endif
+                        cycle
                     endif
                     !
                     ! array size
                     !
                     pos(1) = index(argtmp,"--arraysize")
                     pos(2) = index(argtmp,"-s")
-                    if (any(pos(:).gt.0) ) then
+                    if (any(pos(:).eq.1) ) then
                         if (i+1.gt.argc) then
-                            print*,'You failed to provide a value for ',argtmp
+                            print*,'You failed to provide a value for ',argtmp,'ASS'
                         else
                             call get_command_argument(i+1,argtmp,arglen,err)
                             read(argtmp,'(i15)') array_size
                         endif
+                        cycle
                     endif
                     !
                     ! number of iterations
                     !
                     pos(1) = index(argtmp,"--numtimes")
                     pos(2) = index(argtmp,"-n")
-                    if (any(pos(:).gt.0) ) then
+                    if (any(pos(:).eq.1) ) then
                         if (i+1.gt.argc) then
                             print*,'You failed to provide a value for ',argtmp
                         else
@@ -116,12 +118,13 @@ module BabelStreamUtil
                                 stop
                             end if
                         endif
+                        cycle
                     endif
                     !
                     ! precision
                     !
                     pos(1) = index(argtmp,"--float")
-                    if (pos(1).gt.0) then
+                    if (pos(1).eq.1) then
                         write(*,'(a46,a39)') "Sorry, you have to recompile with -DUSE_FLOAT ", &
                                              "to run BabelStream in single precision."
                         stop
@@ -130,18 +133,20 @@ module BabelStreamUtil
                     ! selection (All, Triad, Nstream)
                     !
                     pos(1) = index(argtmp,"--triad-only")
-                    if (pos(1).gt.0) then
+                    if (pos(1).eq.1) then
                         selection = 2
+                        cycle
                     endif
                     pos(1) = index(argtmp,"--nstream-only")
-                    if (pos(1).gt.0) then
+                    if (pos(1).eq.1) then
                         selection = 3
+                        cycle
                     endif
                     !
                     ! CSV
                     !
                     pos(1) = index(argtmp,"--csv")
-                    if (pos(1).gt.0) then
+                    if (pos(1).eq.1) then
                         csv = .true.
                         write(*,'(a39)') "Sorry, CSV support isn't available yet."
                         stop
@@ -150,15 +155,16 @@ module BabelStreamUtil
                     ! units
                     !
                     pos(1) = index(argtmp,"--mibibytes")
-                    if (pos(1).gt.0) then
+                    if (pos(1).eq.1) then
                         mibibytes = .true.
+                        cycle
                     endif
                     !
                     ! help
                     !
                     pos(1) = index(argtmp,"--help")
                     pos(2) = index(argtmp,"-h")
-                    if (any(pos(:).gt.0) ) then
+                    if (any(pos(:).eq.1) ) then
                         call get_command_argument(0,argtmp,arglen,err)
                         write(*,'(a7,a,a10)') "Usage: ", trim(argtmp), " [OPTIONS]"
                         write(*,'(a)') "Options:"

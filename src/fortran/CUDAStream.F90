@@ -3,6 +3,7 @@ module CUDAFortranKernels
     use BabelStreamTypes
 
     contains
+
         attributes(global) subroutine do_copy(n,A,C)
             implicit none
             integer(kind=StreamIntKind), intent(in), value :: n
@@ -66,6 +67,7 @@ module CUDAFortranKernels
             endif
         end subroutine do_nstream
 
+#if 0
         attributes(global) subroutine do_dot(n,A,B,r)
             implicit none
             integer(kind=StreamIntKind), intent(in), value :: n
@@ -78,6 +80,7 @@ module CUDAFortranKernels
                r = r + A(i) * B(i)
             end do
         end subroutine do_dot
+#endif
 
 end module CUDAFortranKernels
 
@@ -92,7 +95,7 @@ module CUDAStream
 
     integer(kind=StreamIntKind) :: N
 
-    real(kind=REAL64), allocatable, managed :: A(:), B(:), C(:)
+    real(kind=REAL64), allocatable, device :: A(:), B(:), C(:)
 
     type(dim3) :: grid, tblock
 
@@ -104,7 +107,8 @@ module CUDAStream
             integer :: num, err
             err = cudaGetDeviceCount(num)
             if (err.ne.0) then
-              write(*,'(a12,i4)') "CUDA error: ",err
+              write(*,'(a)') "cudaGetDeviceCount failed"
+              write(*,'(a)') cudaGetErrorString(err)
               stop
             else if (num.eq.0) then
               write(*,'(a17)') "No devices found."
@@ -165,74 +169,138 @@ module CUDAStream
         end subroutine dealloc
 
         subroutine init_arrays(initA, initB, initC)
+            use cudafor, only: cudaDeviceSynchronize, cudaGetErrorString
             implicit none
             real(kind=REAL64), intent(in) :: initA, initB, initC
             integer(kind=StreamIntKind) :: i
+            integer :: err
             A = initA
             B = initB
             C = initC
+            err = cudaDeviceSynchronize()
+            if (err.ne.0) then
+              write(*,'(a)') "cudaDeviceSynchronize failed"
+              write(*,'(a)') cudaGetErrorString(err)
+              stop
+            endif
         end subroutine init_arrays
 
         subroutine read_arrays(h_A, h_B, h_C)
+            use cudafor, only: cudaDeviceSynchronize, cudaGetErrorString
             implicit none
             real(kind=REAL64), intent(inout) :: h_A(:), h_B(:), h_C(:)
             integer(kind=StreamIntKind) :: i
+            integer :: err
             h_A = A
             h_B = B
             h_C = C
+            err = cudaDeviceSynchronize()
+            if (err.ne.0) then
+              write(*,'(a)') "cudaDeviceSynchronize failed"
+              write(*,'(a)') cudaGetErrorString(err)
+              stop
+            endif
         end subroutine read_arrays
 
         subroutine copy()
             use CUDAFortranKernels, only: do_copy
+            use cudafor, only: cudaDeviceSynchronize, cudaGetErrorString
             implicit none
+            integer :: err
             call do_copy<<<grid, tblock>>>(N, A, C)
+            err = cudaDeviceSynchronize()
+            if (err.ne.0) then
+              write(*,'(a)') "cudaDeviceSynchronize failed"
+              write(*,'(a)') cudaGetErrorString(err)
+              stop
+            endif
         end subroutine copy
 
         subroutine add()
             use CUDAFortranKernels, only: do_add
+            use cudafor, only: cudaDeviceSynchronize, cudaGetErrorString
             implicit none
+            integer :: err
             call do_add<<<grid, tblock>>>(N, A, B, C)
+            err = cudaDeviceSynchronize()
+            if (err.ne.0) then
+              write(*,'(a)') "cudaDeviceSynchronize failed"
+              write(*,'(a)') cudaGetErrorString(err)
+              stop
+            endif
         end subroutine add
 
         subroutine mul(startScalar)
             use CUDAFortranKernels, only: do_mul
+            use cudafor, only: cudaDeviceSynchronize, cudaGetErrorString
             implicit none
             real(kind=REAL64), intent(in) :: startScalar
             real(kind=REAL64) :: scalar
+            integer :: err
             scalar = startScalar
             call do_mul<<<grid, tblock>>>(N, scalar, B, C)
+            err = cudaDeviceSynchronize()
+            if (err.ne.0) then
+              write(*,'(a)') "cudaDeviceSynchronize failed"
+              write(*,'(a)') cudaGetErrorString(err)
+              stop
+            endif
         end subroutine mul
 
         subroutine triad(startScalar)
             use CUDAFortranKernels, only: do_triad
+            use cudafor, only: cudaDeviceSynchronize, cudaGetErrorString
             implicit none
             real(kind=REAL64), intent(in) :: startScalar
             real(kind=REAL64) :: scalar
+            integer :: err
             scalar = startScalar
             call do_triad<<<grid, tblock>>>(N, scalar, A, B, C)
+            err = cudaDeviceSynchronize()
+            if (err.ne.0) then
+              write(*,'(a)') "cudaDeviceSynchronize failed"
+              write(*,'(a)') cudaGetErrorString(err)
+              stop
+            endif
         end subroutine triad
 
         subroutine nstream(startScalar)
             use CUDAFortranKernels, only: do_nstream
+            use cudafor, only: cudaDeviceSynchronize, cudaGetErrorString
             implicit none
             real(kind=REAL64), intent(in) :: startScalar
             real(kind=REAL64) :: scalar
+            integer :: err
             scalar = startScalar
             call do_nstream<<<grid, tblock>>>(N, scalar, A, B, C)
+            err = cudaDeviceSynchronize()
+            if (err.ne.0) then
+              write(*,'(a)') "cudaDeviceSynchronize failed"
+              write(*,'(a)') cudaGetErrorString(err)
+              stop
+            endif
         end subroutine nstream
 
         function dot() result(r)
             !use CUDAFortranKernels, only: do_dot
+            use cudafor, only: cudaDeviceSynchronize, cudaGetErrorString
             implicit none
             real(kind=REAL64) :: r
-            !integer(kind=StreamIntKind) :: i
+            integer :: err
+            integer(kind=StreamIntKind) :: i
             !call do_dot<<<grid, tblock>>>(N, B, C, r)
             !r = real(0,kind=REAL64)
-            !$acc parallel loop reduction(+:r)
+            !!$acc parallel loop reduction(+:r)
             !do i=1,N
             !   r = r + A(i) * B(i)
             !end do
             !r = dot_product(A,B)
+            err = cudaDeviceSynchronize()
+            if (err.ne.0) then
+              write(*,'(a)') "cudaDeviceSynchronize failed"
+              write(*,'(a)') cudaGetErrorString(err)
+              stop
+            endif
         end function dot
 
 end module CUDAStream
