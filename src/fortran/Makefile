@@ -20,6 +20,9 @@ else ifeq ($(IMPLEMENTATION),Array)
 else ifeq ($(IMPLEMENTATION),OpenMP)
     FCFLAGS += -DUSE_OPENMP $(OPENMP_FLAG)
     IMPLEMENTATION_OBJECT = OpenMPStream.o
+else ifeq ($(IMPLEMENTATION),OpenMPTaskloop)
+    FCFLAGS += -DUSE_OPENMPTASKLOOP $(OPENMP_FLAG)
+    IMPLEMENTATION_OBJECT = OpenMPTaskloopStream.o
 else ifeq ($(IMPLEMENTATION),OpenACC)
     FCFLAGS += -DUSE_OPENACC $(OPENACC_FLAG)
     IMPLEMENTATION_OBJECT = OpenACCStream.o
@@ -30,7 +33,7 @@ else ifeq ($(IMPLEMENTATION),Sequential)
     FCFLAGS += -DUSE_SEQUENTIAL $(SEQUENTIAL_FLAG)
     IMPLEMENTATION_OBJECT = SequentialStream.o
 else
-    $(info Set IMPLEMENTATION={DoConcurrent,Array,OpenMP,OpenACC,OpenACCArray}. Default is Sequential.)
+    $(info Set IMPLEMENTATION={DoConcurrent,Array,OpenMP,OpenMPTaskloop,OpenACC,OpenACCArray}. Default is Sequential.)
     FCFLAGS += -DUSE_SEQUENTIAL $(SEQUENTIAL_FLAG)
     IMPLEMENTATION_OBJECT = SequentialStream.o
 endif
@@ -52,6 +55,7 @@ clean:
 	-rm -f ArrayStream.o ArrayStream.mod arraystream.mod
 	-rm -f SequentialStream.o SequentialStream.mod sequentialstream.mod
 	-rm -f OpenMPStream.o OpenMPStream.mod openmpstream.mod
+	-rm -f OpenMPTaskloopStream.o OpenMPTaskloopStream.mod openmpstream.mod
 	-rm -f OpenACCStream.o OpenACCStream.mod openaccstream.mod
 	-rm -f OpenACCArrayStream.o OpenACCArrayStream.mod openaccarraystream.mod
 
