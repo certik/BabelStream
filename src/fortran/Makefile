@@ -66,7 +66,9 @@ else
 
 endif
 
-BabelStream: main.F90 $(IMPLEMENTATION_OBJECT)
+all: BabelStream.$(COMPILER).$(IMPLEMENTATION)
+
+BabelStream.$(COMPILER).$(IMPLEMENTATION): main.F90 $(IMPLEMENTATION_OBJECT)
 	$(FC) $(FCFLAGS) $^ BabelStreamTypes.o -o $@
 
 BabelStreamTypes.o BabelStreamTypes.mod: BabelStreamTypes.F90
@@ -76,7 +78,7 @@ BabelStreamTypes.o BabelStreamTypes.mod: BabelStreamTypes.F90
 	$(FC) $(FCFLAGS) -c $<
 
 clean:
-	-rm -f BabelStream
+	-rm -f BabelStream.*
 	-rm -f main.o BabelStreamUtil.mod babelstreamutil.mod
 	-rm -f BabelStreamTypes.o BabelStreamTypes.mod babelstreamtypes.mod
 	-rm -f DoConcurrentStream.o DoConcurrentStream.mod doconcurrentstream.mod

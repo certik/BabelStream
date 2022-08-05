@@ -11,6 +11,7 @@ hip-stream
 tbb-stream
 
 src/fortran/BabelStream
+src/fortran/BabelStream.*
 
 *.o
 *.bc
