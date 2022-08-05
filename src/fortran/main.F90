@@ -35,11 +35,13 @@ module BabelStreamUtil
             use DoConcurrentStream, only: list_devices, set_device
 #elif defined(USE_ARRAY)
             use ArrayStream, only: list_devices, set_device
+#elif defined(USE_OPENMP)
+            use OpenMPStream, only: list_devices, set_device
 #elif defined(USE_OPENACC)
             use OpenACCStream, only: list_devices, set_device
 #elif defined(USE_OPENACCARRAY)
             use OpenACCArrayStream, only: list_devices, set_device
-#else
+#elif defined(USE_SEQUENTIAL)
             use SequentialStream, only: list_devices, set_device
 #endif
             implicit none
@@ -164,11 +166,13 @@ module BabelStreamUtil
             use DoConcurrentStream
 #elif defined(USE_ARRAY)
             use ArrayStream
+#elif defined(USE_OPENMP)
+            use OpenMPStream
 #elif defined(USE_OPENACC)
             use OpenACCStream
 #elif defined(USE_OPENACCARRAY)
             use OpenACCArrayStream
-#else
+#elif defined(USE_SEQUENTIAL)
             use SequentialStream
 #endif
             implicit none
@@ -213,11 +217,13 @@ module BabelStreamUtil
             use DoConcurrentStream
 #elif defined(USE_ARRAY)
             use ArrayStream
+#elif defined(USE_OPENMP)
+            use OpenMPStream
 #elif defined(USE_OPENACC)
             use OpenACCStream
 #elif defined(USE_OPENACCARRAY)
             use OpenACCArrayStream
-#else
+#elif defined(USE_SEQUENTIAL)
             use SequentialStream
 #endif
             implicit none
@@ -241,11 +247,13 @@ module BabelStreamUtil
             use DoConcurrentStream
 #elif defined(USE_ARRAY)
             use ArrayStream
+#elif defined(USE_OPENMP)
+            use OpenMPStream
 #elif defined(USE_OPENACC)
             use OpenACCStream
 #elif defined(USE_OPENACCARRAY)
             use OpenACCArrayStream
-#else
+#elif defined(USE_SEQUENTIAL)
             use SequentialStream
 #endif
             implicit none
@@ -334,11 +342,13 @@ program BabelStream
     use DoConcurrentStream
 #elif defined(USE_ARRAY)
     use ArrayStream
+#elif defined(USE_OPENMP)
+    use OpenMPStream
 #elif defined(USE_OPENACC)
     use OpenACCStream
 #elif defined(USE_OPENACCARRAY)
     use OpenACCArrayStream
-#else
+#elif defined(USE_SEQUENTIAL)
     use SequentialStream
 #endif
     implicit none

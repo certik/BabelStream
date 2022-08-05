@@ -3,5 +3,6 @@ FCFLAGS	:= -std18 -warn all -Ofast
 
 DOCONCURRENT_FLAG   = -parallel
 ARRAY_FLAG          = -parallel
+OPENMP_FLAG         = -qopenmp
 OPENACC_FLAG        = Not Supported
 SEQUENTIAL_FLAG     =

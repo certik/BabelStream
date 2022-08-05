@@ -3,5 +3,6 @@ FCFLAGS	:= -std=f2018 -Wall -O3
 
 DOCONCURRENT_FLAG   =
 ARRAY_FLAG          =
+OPENMP_FLAG         = -fopenmp
 OPENACC_FLAG        = -fopenacc
 SEQUENTIAL_FLAG     =
