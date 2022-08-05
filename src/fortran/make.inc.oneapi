@@ -4,5 +4,12 @@ FCFLAGS	:= -std18 -warn all -Ofast
 DOCONCURRENT_FLAG   = -parallel
 ARRAY_FLAG          = -parallel
 OPENMP_FLAG         = -qopenmp
-OPENACC_FLAG        = Not Supported
+OPENACC_FLAG        =
 SEQUENTIAL_FLAG     =
+
+ifeq ($(IMPLEMENTATION),OpenACC)
+    $(error IMPLEMENTATION=OpenACC is not supported by this compiler.)
+endif
+ifeq ($(IMPLEMENTATION),OpenACCArray)
+    $(error IMPLEMENTATION=OpenACCArray is not supported by this compiler.)
+endif

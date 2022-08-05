@@ -11,3 +11,7 @@ ARRAY_FLAG          = $(GPUFLAG) -stdpar=gpu
 OPENMP_FLAG         = -mp
 OPENACC_FLAG        = $(GPUFLAG) -acc=gpu
 SEQUENTIAL_FLAG     =
+
+ifeq ($(IMPLEMENTATION),OpenMPTaskloop)
+    $(error IMPLEMENTATION=OpenMPTaskloop is not supported by this compiler.)
+endif
