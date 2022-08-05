@@ -23,6 +23,10 @@ else ifeq ($(IMPLEMENTATION),OpenMP)
     FCFLAGS += -DUSE_OPENMP $(OPENMP_FLAG)
     IMPLEMENTATION_OBJECT = OpenMPStream.o
 
+else ifeq ($(IMPLEMENTATION),OpenMPWorkshare)
+    FCFLAGS += -DUSE_OPENMPWORKSHARE $(OPENMP_FLAG)
+    IMPLEMENTATION_OBJECT = OpenMPWorkshareStream.o
+
 else ifeq ($(IMPLEMENTATION),OpenMPTarget)
     FCFLAGS += -DUSE_OPENMPTARGET $(OPENMP_FLAG)
     IMPLEMENTATION_OBJECT = OpenMPTargetStream.o
@@ -48,7 +52,7 @@ else ifeq ($(IMPLEMENTATION),Sequential)
     IMPLEMENTATION_OBJECT = SequentialStream.o
 
 else
-    $(info Set IMPLEMENTATION={DoConcurrent,Array,OpenMP,OpenMPTarget,OpenMPTargetLoop,OpenMPTaskloop,OpenACC,OpenACCArray}.)
+    $(info Set IMPLEMENTATION={DoConcurrent,Array,OpenMP,OpenMPWorkshare,OpenMPTarget,OpenMPTargetLoop,OpenMPTaskloop,OpenACC,OpenACCArray}.)
     FCFLAGS += -DUSE_SEQUENTIAL $(SEQUENTIAL_FLAG)
     IMPLEMENTATION_OBJECT = SequentialStream.o
 
@@ -71,6 +75,7 @@ clean:
 	-rm -f ArrayStream.o ArrayStream.mod arraystream.mod
 	-rm -f SequentialStream.o SequentialStream.mod sequentialstream.mod
 	-rm -f OpenMPStream.o OpenMPStream.mod openmpstream.mod
+	-rm -f OpenMPWorkshareStream.o OpenMPWorkshareStream.mod openmpstream.mod
 	-rm -f OpenMPTaskloopStream.o OpenMPTaskloopStream.mod openmptaskloopstream.mod
 	-rm -f OpenMPTargetStream.o OpenMPTargetStream.mod openmptargetstream.mod
 	-rm -f OpenMPTargetLoopStream.o OpenMPTargetLoopStream.mod openmptargetstream.mod
