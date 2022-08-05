@@ -5,11 +5,15 @@ DOCONCURRENT_FLAG   = -parallel
 ARRAY_FLAG          = -parallel
 OPENMP_FLAG         = -qopenmp
 OPENACC_FLAG        =
+CUDA_FLAG           =
 SEQUENTIAL_FLAG     =
 
 ifeq ($(IMPLEMENTATION),OpenACC)
-    $(error IMPLEMENTATION=OpenACC is not supported by this compiler.)
+    $(error IMPLEMENTATION=$(IMPLEMENTATION) is not supported by this compiler.)
 endif
 ifeq ($(IMPLEMENTATION),OpenACCArray)
-    $(error IMPLEMENTATION=OpenACCArray is not supported by this compiler.)
+    $(error IMPLEMENTATION=$(IMPLEMENTATION) is not supported by this compiler.)
+endif
+ifeq ($(IMPLEMENTATION),CUDA)
+    $(error IMPLEMENTATION=$(IMPLEMENTATION) is not supported by this compiler.)
 endif

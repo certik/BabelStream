@@ -1,5 +1,5 @@
 FC	:= nvfortran
-FCFLAGS	:= -O3 -Minform=inform
+FCFLAGS	:= -O3 -Minform=inform -Minfo=all
 
 # Orin
 #GPUFLAG = -gpu=ccn87,cc86
@@ -10,6 +10,7 @@ DOCONCURRENT_FLAG   = $(GPUFLAG) -stdpar=gpu
 ARRAY_FLAG          = $(GPUFLAG) -stdpar=gpu
 OPENMP_FLAG         = $(GPUFLAG) -mp=gpu
 OPENACC_FLAG        = $(GPUFLAG) -acc=gpu
+CUDA_FLAG           = $(GPUFLAG) -cuda
 SEQUENTIAL_FLAG     =
 
 ifeq ($(IMPLEMENTATION),OpenMPTaskloop)

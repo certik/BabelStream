@@ -5,4 +5,5 @@ DOCONCURRENT_FLAG   =
 ARRAY_FLAG          =
 OPENMP_FLAG         = -fopenmp
 OPENACC_FLAG        = -fopenacc
+CUDA_FLAG           =
 SEQUENTIAL_FLAG     =
