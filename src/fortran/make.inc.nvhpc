@@ -1,10 +1,13 @@
 FC	:= nvfortran
-FCFLAGS	:= -O3 -Minform=inform -Minfo=all
+#FCFLAGS	:= -O3 -Minform=inform -Minfo=all
+FCFLAGS	:= -O3 -Minform=warn
 
 # Orin
 #GPUFLAG = -gpu=ccn87,cc86
 # Turing
-GPUFLAG = -gpu=cc75
+#GPUFLAG = -gpu=cc75
+# Turing
+GPUFLAG = -gpu=cc80
 
 DOCONCURRENT_FLAG   = $(GPUFLAG) -stdpar=gpu
 ARRAY_FLAG          = $(GPUFLAG) -stdpar=gpu
