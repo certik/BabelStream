@@ -14,7 +14,6 @@ module OpenMPStream
 
         subroutine list_devices()
             implicit none
-            integer :: num
             write(*,'(a36,a12)') "Listing devices is not supported by ", implementation_name
         end subroutine list_devices
 

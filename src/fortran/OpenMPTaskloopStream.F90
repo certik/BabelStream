@@ -14,7 +14,6 @@ module OpenMPTaskloopStream
 
         subroutine list_devices()
             implicit none
-            integer :: num
             write(*,'(a36,a12)') "Listing devices is not supported by ", implementation_name
         end subroutine list_devices
 
@@ -50,42 +49,58 @@ module OpenMPTaskloopStream
             implicit none
             real(kind=REAL64), intent(in) :: initA, initB, initC
             integer(kind=StreamIntKind) :: i
-            !$omp parallel taskloop
+            !$omp parallel
+            !$omp master
+            !$omp taskloop
             do i=1,N
                A(i) = initA
                B(i) = initB
                C(i) = initC
             end do
+            !$omp end master
+            !$omp end parallel
         end subroutine init_arrays
 
         subroutine read_arrays(h_A, h_B, h_C)
             implicit none
             real(kind=REAL64), intent(inout) :: h_A(:), h_B(:), h_C(:)
             integer(kind=StreamIntKind) :: i
-            !$omp parallel taskloop
+            !$omp parallel
+            !$omp master
+            !$omp taskloop
             do i=1,N
                h_A(i) = A(i)
                h_B(i) = B(i)
                h_C(i) = C(i)
             end do
+            !$omp end master
+            !$omp end parallel
         end subroutine read_arrays
 
         subroutine copy()
             implicit none
             integer(kind=StreamIntKind) :: i
-            !$omp parallel taskloop
+            !$omp parallel
+            !$omp master
+            !$omp taskloop
             do i=1,N
                C(i) = A(i)
             end do
+            !$omp end master
+            !$omp end parallel
         end subroutine copy
 
         subroutine add()
             implicit none
             integer(kind=StreamIntKind) :: i
-            !$omp parallel taskloop
+            !$omp parallel
+            !$omp master
+            !$omp taskloop
             do i=1,N
                C(i) = A(i) + B(i)
             end do
+            !$omp end master
+            !$omp end parallel
         end subroutine add
 
         subroutine mul(startScalar)
@@ -94,10 +109,14 @@ module OpenMPTaskloopStream
             real(kind=REAL64) :: scalar
             integer(kind=StreamIntKind) :: i
             scalar = startScalar
-            !$omp parallel taskloop
+            !$omp parallel
+            !$omp master
+            !$omp taskloop
             do i=1,N
                B(i) = scalar * C(i)
             end do
+            !$omp end master
+            !$omp end parallel
         end subroutine mul
 
         subroutine triad(startScalar)
@@ -106,10 +125,14 @@ module OpenMPTaskloopStream
             real(kind=REAL64) :: scalar
             integer(kind=StreamIntKind) :: i
             scalar = startScalar
-            !$omp parallel taskloop
+            !$omp parallel
+            !$omp master
+            !$omp taskloop
             do i=1,N
                A(i) = B(i) + scalar * C(i)
             end do
+            !$omp end master
+            !$omp end parallel
         end subroutine triad
 
         subroutine nstream(startScalar)
@@ -118,10 +141,14 @@ module OpenMPTaskloopStream
             real(kind=REAL64) :: scalar
             integer(kind=StreamIntKind) :: i
             scalar = startScalar
-            !$omp parallel taskloop
+            !$omp parallel
+            !$omp master
+            !$omp taskloop
             do i=1,N
                A(i) = A(i) + B(i) + scalar * C(i)
             end do
+            !$omp end master
+            !$omp end parallel
         end subroutine nstream
 
         function dot() result(s)
@@ -130,10 +157,14 @@ module OpenMPTaskloopStream
             integer(kind=StreamIntKind) :: i
             ! reduction omitted because NVF infers it and other compilers do not support
             s = real(0,kind=REAL64)
-            !$omp parallel taskloop reduction(+:s)
+            !$omp parallel
+            !$omp master
+            !$omp taskloop reduction(+:s)
             do i=1,N
                s = s + A(i) * B(i)
             end do
+            !$omp end master
+            !$omp end parallel
         end function dot
 
 end module OpenMPTaskloopStream
