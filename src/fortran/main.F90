@@ -341,9 +341,9 @@ program BabelStream
 
     call parseArguments()
 
-    write(*,'(a)')     "BabelStream"
+    write(*,'(a)')        "BabelStream Fortran"
     write(*,'(a9,f4.1)')  "Version: ", VERSION_STRING
-    write(*,'(a16,a)') "Implementation: ", implementation_name
+    write(*,'(a16,a)')    "Implementation: ", implementation_name
 
     block
       character(len=32) :: printout
@@ -361,8 +361,8 @@ program BabelStream
         label   = "MB"
     endif
 
-    write(*,'(a12,f9.1,a4)') 'Array size: ',1.0d0 * array_size * element_size * scaling, label
-    write(*,'(a12,f9.1,a4)') 'Total size: ',3.0d0 * array_size * element_size * scaling, label
+    write(*,'(a12,f9.1,a3)') 'Array size: ',1.0d0 * array_size * element_size * scaling, label
+    write(*,'(a12,f9.1,a3)') 'Total size: ',3.0d0 * array_size * element_size * scaling, label
 
     allocate( timings(5,num_times) )
 
