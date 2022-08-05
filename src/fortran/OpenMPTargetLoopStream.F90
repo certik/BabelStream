@@ -1,10 +1,10 @@
-module OpenACCStream
+module OpenMPTargetLoopStream
     use, intrinsic :: ISO_Fortran_env
     use BabelStreamTypes
 
     implicit none
 
-    character(len=7), parameter :: implementation_name = "OpenACC"
+    character(len=16), parameter :: implementation_name = "OpenMPTargetLoop"
 
     integer(kind=StreamIntKind) :: N
 
@@ -13,10 +13,10 @@ module OpenACCStream
     contains
 
         subroutine list_devices()
-            use openacc
+            use omp_lib
             implicit none
             integer :: num
-            num = acc_get_num_devices(acc_get_device_type())
+            num = omp_get_num_devices()
             if (num.eq.0) then
               write(*,'(a17)') "No devices found."
             else
@@ -25,11 +25,11 @@ module OpenACCStream
         end subroutine list_devices
 
         subroutine set_device(dev)
-            use openacc
+            use omp_lib
             implicit none
             integer, intent(in) :: dev
             integer :: num
-            num = acc_get_num_devices(acc_get_device_type())
+            num = omp_get_num_devices()
             if (num.eq.0) then
               write(*,'(a17)') "No devices found."
               stop
@@ -37,7 +37,7 @@ module OpenACCStream
               write(*,'(a21)') "Invalid device index."
               stop
             else
-              call acc_set_device_num(dev, acc_get_device_type())
+              call omp_set_default_device(dev)
             end if
         end subroutine set_device
 
@@ -47,7 +47,7 @@ module OpenACCStream
             integer :: err
             N = array_size
             allocate( A(1:N), B(1:N), C(1:N), stat=err)
-            !$acc enter data create(A,B,C)
+            !$omp target enter data map(alloc: A,B,C)
             if (err .ne. 0) then
               write(*,'(a20,i3)') 'allocate returned ',err
               stop 1
@@ -57,7 +57,7 @@ module OpenACCStream
         subroutine dealloc()
             implicit none
             integer :: err
-            !$acc exit data delete(A,B,C)
+            !$omp target exit data map(delete: A,B,C)
             deallocate( A, B, C, stat=err)
             if (err .ne. 0) then
               write(*,'(a20,i3)') 'deallocate returned ',err
@@ -69,7 +69,7 @@ module OpenACCStream
             implicit none
             real(kind=REAL64), intent(in) :: initA, initB, initC
             integer(kind=StreamIntKind) :: i
-            !$acc parallel loop
+            !$omp target teams loop
             do i=1,N
                A(i) = initA
                B(i) = initB
@@ -81,7 +81,8 @@ module OpenACCStream
             implicit none
             real(kind=REAL64), intent(inout) :: h_A(:), h_B(:), h_C(:)
             integer(kind=StreamIntKind) :: i
-            !$acc parallel loop
+            ! this might need to use a copy API instead...
+            !$omp target teams loop
             do i=1,N
                h_A(i) = A(i)
                h_B(i) = B(i)
@@ -92,7 +93,7 @@ module OpenACCStream
         subroutine copy()
             implicit none
             integer(kind=StreamIntKind) :: i
-            !$acc parallel loop
+            !$omp target teams loop
             do i=1,N
                C(i) = A(i)
             end do
@@ -101,7 +102,7 @@ module OpenACCStream
         subroutine add()
             implicit none
             integer(kind=StreamIntKind) :: i
-            !$acc parallel loop
+            !$omp target teams loop
             do i=1,N
                C(i) = A(i) + B(i)
             end do
@@ -113,7 +114,7 @@ module OpenACCStream
             real(kind=REAL64) :: scalar
             integer(kind=StreamIntKind) :: i
             scalar = startScalar
-            !$acc parallel loop
+            !$omp target teams loop
             do i=1,N
                B(i) = scalar * C(i)
             end do
@@ -125,7 +126,7 @@ module OpenACCStream
             real(kind=REAL64) :: scalar
             integer(kind=StreamIntKind) :: i
             scalar = startScalar
-            !$acc parallel loop
+            !$omp target teams loop
             do i=1,N
                A(i) = B(i) + scalar * C(i)
             end do
@@ -137,7 +138,7 @@ module OpenACCStream
             real(kind=REAL64) :: scalar
             integer(kind=StreamIntKind) :: i
             scalar = startScalar
-            !$acc parallel loop
+            !$omp target teams loop
             do i=1,N
                A(i) = A(i) + B(i) + scalar * C(i)
             end do
@@ -148,10 +149,10 @@ module OpenACCStream
             real(kind=REAL64) :: s
             integer(kind=StreamIntKind) :: i
             s = real(0,kind=REAL64)
-            !$acc parallel loop reduction(+:s)
+            !$omp target teams loop reduction(+:s)
             do i=1,N
                s = s + A(i) * B(i)
             end do
         end function dot
 
-end module OpenACCStream
+end module OpenMPTargetLoopStream

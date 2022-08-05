@@ -127,7 +127,6 @@ module OpenMPStream
             implicit none
             real(kind=REAL64) :: s
             integer(kind=StreamIntKind) :: i
-            ! reduction omitted because NVF infers it and other compilers do not support
             s = real(0,kind=REAL64)
             !$omp parallel do simd reduction(+:s)
             do i=1,N

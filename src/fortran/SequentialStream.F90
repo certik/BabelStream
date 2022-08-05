@@ -121,7 +121,6 @@ module SequentialStream
             implicit none
             real(kind=REAL64) :: s
             integer(kind=StreamIntKind) :: i
-            ! reduction omitted because NVF infers it and other compilers do not support
             s = real(0,kind=REAL64)
             do i=1,N
                s = s + A(i) * B(i)

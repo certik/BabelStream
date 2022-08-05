@@ -8,7 +8,7 @@ GPUFLAG = -gpu=cc75
 
 DOCONCURRENT_FLAG   = $(GPUFLAG) -stdpar=gpu
 ARRAY_FLAG          = $(GPUFLAG) -stdpar=gpu
-OPENMP_FLAG         = -mp
+OPENMP_FLAG         = $(GPUFLAG) -mp=gpu
 OPENACC_FLAG        = $(GPUFLAG) -acc=gpu
 SEQUENTIAL_FLAG     =
 

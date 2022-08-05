@@ -39,6 +39,8 @@ module BabelStreamUtil
             use OpenMPStream, only: list_devices, set_device
 #elif defined(USE_OPENMPTARGET)
             use OpenMPTargetStream, only: list_devices, set_device
+#elif defined(USE_OPENMPTARGETLOOP)
+            use OpenMPTargetLoopStream, only: list_devices, set_device
 #elif defined(USE_OPENMPTASKLOOP)
             use OpenMPTaskloopStream, only: list_devices, set_device
 #elif defined(USE_OPENACC)
@@ -174,6 +176,8 @@ module BabelStreamUtil
             use OpenMPStream
 #elif defined(USE_OPENMPTARGET)
             use OpenMPTargetStream
+#elif defined(USE_OPENMPTARGETLOOP)
+            use OpenMPTargetLoopStream
 #elif defined(USE_OPENMPTASKLOOP)
             use OpenMPTaskloopStream
 #elif defined(USE_OPENACC)
@@ -229,6 +233,8 @@ module BabelStreamUtil
             use OpenMPStream
 #elif defined(USE_OPENMPTARGET)
             use OpenMPTargetStream
+#elif defined(USE_OPENMPTARGETLOOP)
+            use OpenMPTargetLoopStream
 #elif defined(USE_OPENMPTASKLOOP)
             use OpenMPTaskloopStream
 #elif defined(USE_OPENACC)
@@ -263,6 +269,8 @@ module BabelStreamUtil
             use OpenMPStream
 #elif defined(USE_OPENMPTARGET)
             use OpenMPTargetStream
+#elif defined(USE_OPENMPTARGETLOOP)
+            use OpenMPTargetLoopStream
 #elif defined(USE_OPENMPTASKLOOP)
             use OpenMPTaskloopStream
 #elif defined(USE_OPENACC)
@@ -362,6 +370,8 @@ program BabelStream
     use OpenMPStream
 #elif defined(USE_OPENMPTARGET)
     use OpenMPTargetStream
+#elif defined(USE_OPENMPTARGETLOOP)
+    use OpenMPTargetLoopStream
 #elif defined(USE_OPENMPTASKLOOP)
     use OpenMPTaskloopStream
 #elif defined(USE_OPENACC)

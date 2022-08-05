@@ -14,32 +14,44 @@ FCFLAGS += -DVERSION_STRING="4.0"
 ifeq ($(IMPLEMENTATION),DoConcurrent)
     FCFLAGS += -DUSE_DOCONCURRENT $(DOCONCURRENT_FLAG)
     IMPLEMENTATION_OBJECT = DoConcurrentStream.o
+
 else ifeq ($(IMPLEMENTATION),Array)
     FCFLAGS += -DUSE_ARRAY $(ARRAY_FLAG)
     IMPLEMENTATION_OBJECT = ArrayStream.o
+
 else ifeq ($(IMPLEMENTATION),OpenMP)
     FCFLAGS += -DUSE_OPENMP $(OPENMP_FLAG)
     IMPLEMENTATION_OBJECT = OpenMPStream.o
+
 else ifeq ($(IMPLEMENTATION),OpenMPTarget)
     FCFLAGS += -DUSE_OPENMPTARGET $(OPENMP_FLAG)
     IMPLEMENTATION_OBJECT = OpenMPTargetStream.o
+
+else ifeq ($(IMPLEMENTATION),OpenMPTargetLoop)
+    FCFLAGS += -DUSE_OPENMPTARGETLOOP $(OPENMP_FLAG)
+    IMPLEMENTATION_OBJECT = OpenMPTargetLoopStream.o
+
 else ifeq ($(IMPLEMENTATION),OpenMPTaskloop)
     FCFLAGS += -DUSE_OPENMPTASKLOOP $(OPENMP_FLAG)
     IMPLEMENTATION_OBJECT = OpenMPTaskloopStream.o
+
 else ifeq ($(IMPLEMENTATION),OpenACC)
     FCFLAGS += -DUSE_OPENACC $(OPENACC_FLAG)
     IMPLEMENTATION_OBJECT = OpenACCStream.o
+
 else ifeq ($(IMPLEMENTATION),OpenACCArray)
     FCFLAGS += -DUSE_OPENACCARRAY $(OPENACC_FLAG)
     IMPLEMENTATION_OBJECT = OpenACCArrayStream.o
+
 else ifeq ($(IMPLEMENTATION),Sequential)
     FCFLAGS += -DUSE_SEQUENTIAL $(SEQUENTIAL_FLAG)
     IMPLEMENTATION_OBJECT = SequentialStream.o
+
 else
-    $(info Set IMPLEMENTATION={DoConcurrent,Array,OpenMP,OpenMPTarget,OpenMPTaskloop,OpenACC,OpenACCArray}.)
-    $(info Default is Sequential.)
+    $(info Set IMPLEMENTATION={DoConcurrent,Array,OpenMP,OpenMPTarget,OpenMPTargetLoop,OpenMPTaskloop,OpenACC,OpenACCArray}.)
     FCFLAGS += -DUSE_SEQUENTIAL $(SEQUENTIAL_FLAG)
     IMPLEMENTATION_OBJECT = SequentialStream.o
+
 endif
 
 BabelStream: main.F90 $(IMPLEMENTATION_OBJECT)
@@ -61,6 +73,7 @@ clean:
 	-rm -f OpenMPStream.o OpenMPStream.mod openmpstream.mod
 	-rm -f OpenMPTaskloopStream.o OpenMPTaskloopStream.mod openmptaskloopstream.mod
 	-rm -f OpenMPTargetStream.o OpenMPTargetStream.mod openmptargetstream.mod
+	-rm -f OpenMPTargetLoopStream.o OpenMPTargetLoopStream.mod openmptargetstream.mod
 	-rm -f OpenACCStream.o OpenACCStream.mod openaccstream.mod
 	-rm -f OpenACCArrayStream.o OpenACCArrayStream.mod openaccarraystream.mod
 
