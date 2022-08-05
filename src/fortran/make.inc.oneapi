@@ -17,3 +17,6 @@ endif
 ifeq ($(IMPLEMENTATION),CUDA)
     $(error IMPLEMENTATION=$(IMPLEMENTATION) is not supported by this compiler.)
 endif
+ifeq ($(IMPLEMENTATION),CUDAKernels)
+    $(error IMPLEMENTATION=$(IMPLEMENTATION) is not supported by this compiler.)
+endif
