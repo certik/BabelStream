@@ -10,7 +10,7 @@ DOCONCURRENT_FLAG   = $(GPUFLAG) -stdpar=gpu
 ARRAY_FLAG          = $(GPUFLAG) -stdpar=gpu
 OPENMP_FLAG         = $(GPUFLAG) -mp=gpu
 OPENACC_FLAG        = $(GPUFLAG) -acc=gpu
-CUDA_FLAG           = $(GPUFLAG) -cuda
+CUDA_FLAG           = $(GPUFLAG) -cuda -acc
 SEQUENTIAL_FLAG     =
 
 ifeq ($(IMPLEMENTATION),OpenMPTaskloop)

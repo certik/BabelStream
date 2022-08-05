@@ -289,12 +289,11 @@ module CUDAStream
             integer :: err
             integer(kind=StreamIntKind) :: i
             !call do_dot<<<grid, tblock>>>(N, B, C, r)
-            !r = real(0,kind=REAL64)
-            !!$acc parallel loop reduction(+:r)
-            !do i=1,N
-            !   r = r + A(i) * B(i)
-            !end do
-            !r = dot_product(A,B)
+            r = real(0,kind=REAL64)
+            !$cuf kernel do <<< *, * >>>
+            do i=1,N
+               r = r + A(i) * B(i)
+            end do
             err = cudaDeviceSynchronize()
             if (err.ne.0) then
               write(*,'(a)') "cudaDeviceSynchronize failed"
