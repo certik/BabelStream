@@ -83,10 +83,10 @@ clean:
 	-rm -f ArrayStream.o ArrayStream.mod arraystream.mod
 	-rm -f SequentialStream.o SequentialStream.mod sequentialstream.mod
 	-rm -f OpenMPStream.o OpenMPStream.mod openmpstream.mod
-	-rm -f OpenMPWorkshareStream.o OpenMPWorkshareStream.mod openmpstream.mod
+	-rm -f OpenMPWorkshareStream.o OpenMPWorkshareStream.mod openmpworksharestream.mod
 	-rm -f OpenMPTaskloopStream.o OpenMPTaskloopStream.mod openmptaskloopstream.mod
 	-rm -f OpenMPTargetStream.o OpenMPTargetStream.mod openmptargetstream.mod
-	-rm -f OpenMPTargetLoopStream.o OpenMPTargetLoopStream.mod openmptargetstream.mod
+	-rm -f OpenMPTargetLoopStream.o OpenMPTargetLoopStream.mod openmptargetloopstream.mod
 	-rm -f OpenACCStream.o OpenACCStream.mod openaccstream.mod
 	-rm -f OpenACCArrayStream.o OpenACCArrayStream.mod openaccarraystream.mod
 	-rm -f CUDAStream.o CUDAStream.mod cudastream.mod CUDAFortranKernels.mod cudafortrankernels.mod
