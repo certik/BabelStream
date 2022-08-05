@@ -51,12 +51,16 @@ else ifeq ($(IMPLEMENTATION),CUDA)
     FCFLAGS += -DUSE_CUDA $(CUDA_FLAG)
     IMPLEMENTATION_OBJECT = CUDAStream.o
 
+else ifeq ($(IMPLEMENTATION),CUDAKernel)
+    FCFLAGS += -DUSE_CUDAKERNEL $(CUDA_FLAG)
+    IMPLEMENTATION_OBJECT = CUDAKernelStream.o
+
 else ifeq ($(IMPLEMENTATION),Sequential)
     FCFLAGS += -DUSE_SEQUENTIAL $(SEQUENTIAL_FLAG)
     IMPLEMENTATION_OBJECT = SequentialStream.o
 
 else
-    $(info Set IMPLEMENTATION={DoConcurrent,Array,OpenMP,OpenMPWorkshare,OpenMPTarget,OpenMPTargetLoop,OpenMPTaskloop,OpenACC,OpenACCArray,CUDA}.)
+    $(info Set IMPLEMENTATION={DoConcurrent,Array,OpenMP,OpenMPWorkshare,OpenMPTarget,OpenMPTargetLoop,OpenMPTaskloop,OpenACC,OpenACCArray,CUDA,CUDAKernel}.)
     FCFLAGS += -DUSE_SEQUENTIAL $(SEQUENTIAL_FLAG)
     IMPLEMENTATION_OBJECT = SequentialStream.o
 
@@ -86,4 +90,5 @@ clean:
 	-rm -f OpenACCStream.o OpenACCStream.mod openaccstream.mod
 	-rm -f OpenACCArrayStream.o OpenACCArrayStream.mod openaccarraystream.mod
 	-rm -f CUDAStream.o CUDAStream.mod cudastream.mod CUDAFortranKernels.mod cudafortrankernels.mod
+	-rm -f CUDAKernelStream.o CUDAKernelStream.mod cudakernelstream.mod
 

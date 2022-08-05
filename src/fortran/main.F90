@@ -51,6 +51,8 @@ module BabelStreamUtil
             use OpenACCArrayStream, only: list_devices, set_device
 #elif defined(USE_CUDA)
             use CUDAStream, only: list_devices, set_device
+#elif defined(USE_CUDAKERNEL)
+            use CUDAKernelStream, only: list_devices, set_device
 #elif defined(USE_SEQUENTIAL)
             use SequentialStream, only: list_devices, set_device
 #endif
@@ -198,6 +200,8 @@ module BabelStreamUtil
             use OpenACCArrayStream
 #elif defined(USE_CUDA)
             use CUDAStream
+#elif defined(USE_CUDAKERNEL)
+            use CUDAKernelStream
 #elif defined(USE_SEQUENTIAL)
             use SequentialStream
 #endif
@@ -259,6 +263,8 @@ module BabelStreamUtil
             use OpenACCArrayStream
 #elif defined(USE_CUDA)
             use CUDAStream
+#elif defined(USE_CUDAKERNEL)
+            use CUDAKernelStream
 #elif defined(USE_SEQUENTIAL)
             use SequentialStream
 #endif
@@ -299,6 +305,8 @@ module BabelStreamUtil
             use OpenACCArrayStream
 #elif defined(USE_CUDA)
             use CUDAStream
+#elif defined(USE_CUDAKERNEL)
+            use CUDAKernelStream
 #elif defined(USE_SEQUENTIAL)
             use SequentialStream
 #endif
@@ -404,6 +412,8 @@ program BabelStream
     use OpenACCArrayStream
 #elif defined(USE_CUDA)
     use CUDAStream
+#elif defined(USE_CUDAKERNEL)
+    use CUDAKernelStream
 #elif defined(USE_SEQUENTIAL)
     use SequentialStream
 #endif
