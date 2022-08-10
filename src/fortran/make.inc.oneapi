@@ -1,9 +1,15 @@
-FC	:= ifx
-FCFLAGS	:= -std18 -warn all -Ofast
+FC	:= ifort
+FCFLAGS	 = -std18
+FCFLAGS += -Ofast -xHOST
+FCFLAGS += -qopt-streaming-stores=always
+FCFLAGS += -qopt-zmm-usage=low
 
-DOCONCURRENT_FLAG   = -parallel
-ARRAY_FLAG          = -parallel
+DOCONCURRENT_FLAG   = -parallel -qopenmp
+ARRAY_FLAG          = -parallel -qopenmp
 OPENMP_FLAG         = -qopenmp
+ifeq ($(FC),ifx)
+    OPENMP_FLAG += -fopenmp-targets=spir64
+endif
 OPENACC_FLAG        =
 CUDA_FLAG           =
 SEQUENTIAL_FLAG     =
