@@ -8,7 +8,11 @@ module DoConcurrentStream
 
     integer(kind=StreamIntKind) :: N
 
+#ifdef USE_DEVICE
+    real(kind=REAL64), allocatable, device :: A(:), B(:), C(:)
+#else
     real(kind=REAL64), allocatable :: A(:), B(:), C(:)
+#endif
 
     contains
 
@@ -61,7 +65,7 @@ module DoConcurrentStream
             implicit none
             real(kind=REAL64), intent(inout) :: h_A(:), h_B(:), h_C(:)
             integer(kind=StreamIntKind) :: i
-            do concurrent (i=1:N)
+            do concurrent (i=1:N) shared(A,B,C)
                h_A(i) = A(i)
                h_B(i) = B(i)
                h_C(i) = C(i)
@@ -71,7 +75,7 @@ module DoConcurrentStream
         subroutine copy()
             implicit none
             integer(kind=StreamIntKind) :: i
-            do concurrent (i=1:N)
+            do concurrent (i=1:N) shared(A,C)
                C(i) = A(i)
             end do
         end subroutine copy
@@ -79,7 +83,7 @@ module DoConcurrentStream
         subroutine add()
             implicit none
             integer(kind=StreamIntKind) :: i
-            do concurrent (i=1:N)
+            do concurrent (i=1:N) shared(A,B,C)
                C(i) = A(i) + B(i)
             end do
         end subroutine add
@@ -90,7 +94,11 @@ module DoConcurrentStream
             real(kind=REAL64) :: scalar
             integer(kind=StreamIntKind) :: i
             scalar = startScalar
-            do concurrent (i=1:N)
+#if LOCAL
+            do concurrent (i=1:N) shared(B,C) local(scalar)
+#else
+            do concurrent (i=1:N) shared(B,C)
+#endif
                B(i) = scalar * C(i)
             end do
         end subroutine mul
@@ -101,7 +109,7 @@ module DoConcurrentStream
             real(kind=REAL64) :: scalar
             integer(kind=StreamIntKind) :: i
             scalar = startScalar
-            do concurrent (i=1:N)
+            do concurrent (i=1:N) shared(A,B,C)
                A(i) = B(i) + scalar * C(i)
             end do
         end subroutine triad
@@ -112,7 +120,7 @@ module DoConcurrentStream
             real(kind=REAL64) :: scalar
             integer(kind=StreamIntKind) :: i
             scalar = startScalar
-            do concurrent (i=1:N)
+            do concurrent (i=1:N) shared(A,B,C)
                A(i) = A(i) + B(i) + scalar * C(i)
             end do
         end subroutine nstream
@@ -123,7 +131,7 @@ module DoConcurrentStream
             integer(kind=StreamIntKind) :: i
             ! reduction omitted because NVF infers it and other compilers do not support
             s = real(0,kind=REAL64)
-            do concurrent (i=1:N)
+            do concurrent (i=1:N) shared(A,B)
                s = s + A(i) * B(i)
             end do
         end function dot

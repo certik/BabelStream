@@ -5,15 +5,20 @@ FCFLAGS	:= -O3 -Minform=warn
 # Orin
 #GPUFLAG = -gpu=ccn87,cc86
 # Turing
-#GPUFLAG = -gpu=cc75
-# Turing
-GPUFLAG = -gpu=cc80
+GPUFLAG = -gpu=cc75
+# Ampere
+#GPUFLAG = -gpu=cc80
 
-DOCONCURRENT_FLAG   = $(GPUFLAG) -stdpar=gpu
-ARRAY_FLAG          = $(GPUFLAG) -stdpar=gpu
-OPENMP_FLAG         = $(GPUFLAG) -mp=gpu
-OPENACC_FLAG        = $(GPUFLAG) -acc=gpu
-CUDA_FLAG           = $(GPUFLAG) -cuda -acc
+# this is to allow apples-to-apples comparison with DC in non-DC GPU impls
+# set exactly one of these!
+#MANAGED = -DUSE_MANAGED -gpu=managed
+DEVICE  = -DUSE_DEVICE -cuda -gpu=nomanaged
+
+DOCONCURRENT_FLAG   = $(GPUFLAG) -stdpar=gpu $(DEVICE)
+ARRAY_FLAG          = $(GPUFLAG) -stdpar=gpu $(MANAGED)
+OPENMP_FLAG         = $(GPUFLAG) -mp=gpu     $(MANAGED)
+OPENACC_FLAG        = $(GPUFLAG) -acc=gpu    $(MANAGED)
+CUDA_FLAG           = $(GPUFLAG) -cuda -acc  $(MANAGED)
 SEQUENTIAL_FLAG     =
 
 ifeq ($(IMPLEMENTATION),OpenMPTaskloop)

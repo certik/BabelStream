@@ -47,7 +47,9 @@ module OpenMPTargetStream
             integer :: err
             N = array_size
             allocate( A(1:N), B(1:N), C(1:N), stat=err)
+#ifndef USE_MANAGED
             !$omp target enter data map(alloc: A,B,C)
+#endif
             if (err .ne. 0) then
               write(*,'(a20,i3)') 'allocate returned ',err
               stop 1
@@ -57,7 +59,9 @@ module OpenMPTargetStream
         subroutine dealloc()
             implicit none
             integer :: err
+#ifndef USE_MANAGED
             !$omp target exit data map(delete: A,B,C)
+#endif
             deallocate( A, B, C, stat=err)
             if (err .ne. 0) then
               write(*,'(a20,i3)') 'deallocate returned ',err

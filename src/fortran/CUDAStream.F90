@@ -95,7 +95,11 @@ module CUDAStream
 
     integer(kind=StreamIntKind) :: N
 
+#ifdef USE_MANAGED
+    real(kind=REAL64), allocatable, managed :: A(:), B(:), C(:)
+#else
     real(kind=REAL64), allocatable, device :: A(:), B(:), C(:)
+#endif
 
     type(dim3) :: grid, tblock
 
