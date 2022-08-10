@@ -93,4 +93,5 @@ clean:
 	-rm -f OpenACCArrayStream.o OpenACCArrayStream.mod openaccarraystream.mod
 	-rm -f CUDAStream.o CUDAStream.mod cudastream.mod CUDAFortranKernels.mod cudafortrankernels.mod
 	-rm -f CUDAKernelStream.o CUDAKernelStream.mod cudakernelstream.mod
+	-rm -f *.modmic *.mod *.o
 
