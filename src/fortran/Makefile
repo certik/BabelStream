@@ -4,6 +4,8 @@ else ifeq ($(COMPILER),oneapi)
     include make.inc.oneapi
 else ifeq ($(COMPILER),gcc)
     include make.inc.gcc
+else ifeq ($(COMPILER),cray)
+    include make.inc.cray
 else
     $(info Set COMPILER={nvhpc,oneapi}. Default is gcc.)
     include make.inc.gcc

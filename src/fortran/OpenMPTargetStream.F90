@@ -101,6 +101,7 @@ module OpenMPTargetStream
             do i=1,N
                C(i) = A(i)
             end do
+            !$omp barrier
         end subroutine copy
 
         subroutine add()

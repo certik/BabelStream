@@ -20,6 +20,8 @@ src/fortran/BabelStream.*
 *.gz
 *.a
 *.mod
+*.cub
+*.ptx
 
 KokkosCore_config.*
 

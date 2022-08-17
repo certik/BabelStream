@@ -127,7 +127,11 @@ module DoConcurrentStream
             integer(kind=StreamIntKind) :: i
             ! reduction omitted because NVF infers it and other compilers do not support
             s = real(0,kind=REAL64)
+#ifdef CRAY_THREAD_DOCONCURRENT
+            do i=1,N
+#else
             do concurrent (i=1:N) shared(A,B)
+#endif
                s = s + A(i) * B(i)
             end do
         end function dot
