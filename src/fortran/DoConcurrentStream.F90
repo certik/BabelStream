@@ -94,11 +94,7 @@ module DoConcurrentStream
             real(kind=REAL64) :: scalar
             integer(kind=StreamIntKind) :: i
             scalar = startScalar
-#if LOCAL
-            do concurrent (i=1:N) shared(B,C) local(scalar)
-#else
             do concurrent (i=1:N) shared(B,C)
-#endif
                B(i) = scalar * C(i)
             end do
         end subroutine mul
