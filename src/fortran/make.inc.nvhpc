@@ -1,24 +1,29 @@
 FC	:= nvfortran
 #FCFLAGS	:= -O3 -Minform=inform -Minfo=all
 FCFLAGS	:= -O3 -Minform=warn
+#FCFLAGS += -tp=neoverse-n1
+#FCFLAGS += -tp=neoverse-v1
+
+TARGET=gpu
+#TARGET=multicore
 
 # Orin
 #GPUFLAG = -gpu=ccn87,cc86
 # Turing
-GPUFLAG = -gpu=cc75
+#GPUFLAG = -gpu=cc75
 # Ampere
-#GPUFLAG = -gpu=cc80
+GPUFLAG = -gpu=cc80
 
 # this is to allow apples-to-apples comparison with DC in non-DC GPU impls
 # set exactly one of these!
 #MANAGED = -DUSE_MANAGED -gpu=managed
-DEVICE  = -DUSE_DEVICE -cuda -gpu=nomanaged
+#DEVICE  = -DUSE_DEVICE -cuda -gpu=nomanaged
 
-DOCONCURRENT_FLAG   = $(GPUFLAG) -stdpar=gpu $(DEVICE)
-ARRAY_FLAG          = $(GPUFLAG) -stdpar=gpu $(MANAGED)
-OPENMP_FLAG         = $(GPUFLAG) -mp=gpu     $(MANAGED)
-OPENACC_FLAG        = $(GPUFLAG) -acc=gpu    $(MANAGED)
-CUDA_FLAG           = $(GPUFLAG) -cuda -acc  $(MANAGED)
+DOCONCURRENT_FLAG   = $(GPUFLAG) -stdpar=$(TARGET) $(DEVICE)
+ARRAY_FLAG          = $(GPUFLAG) -stdpar=$(TARGET) $(MANAGED)
+OPENMP_FLAG         = $(GPUFLAG) -mp=$(TARGET)     $(MANAGED)
+OPENACC_FLAG        = $(GPUFLAG) -acc=$(TARGET)    $(MANAGED)
+CUDA_FLAG           = $(GPUFLAG) -cuda -acc=gpu    $(MANAGED)
 SEQUENTIAL_FLAG     =
 
 ifeq ($(IMPLEMENTATION),OpenMPTaskloop)
