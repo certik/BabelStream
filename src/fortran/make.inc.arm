@@ -1,0 +1,19 @@
+FC	:= armflang
+FCFLAGS	:= -std=f2018 -O3
+FCFLAGS += -Wall -Wno-unused-variable
+FCFLAGS += -mcpu=neoverse-v1
+#FCFLAGS += -mcpu=neoverse-n1
+
+DOCONCURRENT_FLAG   =
+ARRAY_FLAG          =
+OPENMP_FLAG         = -fopenmp
+OPENACC_FLAG        = -fopenacc
+CUDA_FLAG           =
+SEQUENTIAL_FLAG     =
+
+ifeq ($(IMPLEMENTATION),CUDA)
+    $(error IMPLEMENTATION=$(IMPLEMENTATION) is not supported by this compiler.)
+endif
+ifeq ($(IMPLEMENTATION),CUDAKernels)
+    $(error IMPLEMENTATION=$(IMPLEMENTATION) is not supported by this compiler.)
+endif
