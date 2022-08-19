@@ -3,16 +3,17 @@ FC	:= nvfortran
 FCFLAGS	:= -O3 -Minform=warn
 #FCFLAGS += -tp=neoverse-n1
 #FCFLAGS += -tp=neoverse-v1
+FCFLAGS += -tp=host #skylake
 
-TARGET=gpu
-#TARGET=multicore
+#TARGET=gpu
+TARGET=multicore
 
 # Orin
 #GPUFLAG = -gpu=ccn87,cc86
 # Turing
 #GPUFLAG = -gpu=cc75
 # Ampere
-GPUFLAG = -gpu=cc80
+#GPUFLAG = -gpu=cc80
 
 # this is to allow apples-to-apples comparison with DC in non-DC GPU impls
 # set exactly one of these!
