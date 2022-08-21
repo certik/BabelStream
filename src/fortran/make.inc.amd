@@ -1,12 +1,13 @@
-FC	:= /opt/rocm/llvm/bin/flang
+FC  := /opt/rocm/llvm/bin/flang
+FC	:= /global/u1/j/jhammond/AMD/aocc-compiler-3.2.0/bin/flang
 FCFLAGS	:= -std=f2018 -O3 -ffast-math
 FCFLAGS += -Wall -Wno-unused-variable
-FCFLAGS += 
+FCFLAGS += -march=znver3
 
-DOCONCURRENT_FLAG   =
-ARRAY_FLAG          =
+DOCONCURRENT_FLAG   = -fopenmp # libomp.so required
+ARRAY_FLAG          = -fopenmp # libomp.so required
 OPENMP_FLAG         = -fopenmp
-OPENMP_FLAG        += -fopenmp-targets=amdgcn-amd-amdhsa -Xopenmp-target=amdgcn-amd-amdhsa -march=gfx908
+#OPENMP_FLAG        += -fopenmp-targets=amdgcn-amd-amdhsa -Xopenmp-target=amdgcn-amd-amdhsa -march=gfx908
 OPENACC_FLAG        = -fopenacc
 CUDA_FLAG           =
 SEQUENTIAL_FLAG     =

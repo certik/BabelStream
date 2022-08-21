@@ -2,7 +2,7 @@
 
 #module swap PrgEnv-cray PrgEnv-nvhpc
 #module load nvhpc/22.7
-for compiler in nvhpc gcc cray ; do
+for compiler in nvhpc gcc cray amd ; do
     if [ "x$compiler" == "xgcc" ] ; then
         module load gcc/11.2.0
     fi
