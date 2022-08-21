@@ -2,8 +2,8 @@ FC	:= nvfortran
 #FCFLAGS	:= -O3 -Minform=inform -Minfo=all
 FCFLAGS	:= -O3 -Minform=warn
 #FCFLAGS += -tp=neoverse-n1
-#FCFLAGS += -tp=neoverse-v1
-FCFLAGS += -tp=host #skylake
+FCFLAGS += -tp=neoverse-v1
+#FCFLAGS += -tp=host #skylake
 
 #TARGET=gpu
 TARGET=multicore

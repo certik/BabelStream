@@ -84,7 +84,6 @@ BabelStreamTypes.o BabelStreamTypes.mod: BabelStreamTypes.F90
 	$(FC) $(FCFLAGS) -c $<
 
 clean:
-	-rm -f BabelStream.*
 	-rm -f main.o BabelStreamUtil.mod babelstreamutil.mod
 	-rm -f BabelStreamTypes.o BabelStreamTypes.mod babelstreamtypes.mod
 	-rm -f DoConcurrentStream.o DoConcurrentStream.mod doconcurrentstream.mod
@@ -99,5 +98,7 @@ clean:
 	-rm -f OpenACCArrayStream.o OpenACCArrayStream.mod openaccarraystream.mod
 	-rm -f CUDAStream.o CUDAStream.mod cudastream.mod CUDAFortranKernels.mod cudafortrankernels.mod
 	-rm -f CUDAKernelStream.o CUDAKernelStream.mod cudakernelstream.mod
-	-rm -f *.modmic *.mod *.o
+	-rm -f *.modmic *.mod *.o *.cub *.ptx
 
+realclean: clean
+	-rm -f BabelStream.*
