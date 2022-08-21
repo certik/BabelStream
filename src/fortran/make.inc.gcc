@@ -3,7 +3,8 @@ FCFLAGS	:= -std=f2018 -O3
 FCFLAGS += -Wall -Wno-unused-dummy-argument -Wno-unused-variable
 #FCFLAGS += -mcpu=neoverse-v1
 #FCFLAGS += -mcpu=neoverse-n1
-FCFLAGS += -march=icelake-server
+#FCFLAGS += -march=icelake-server
+FCFLAGS += -march=znver3
 
 DOCONCURRENT_FLAG   =
 ARRAY_FLAG          =
