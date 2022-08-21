@@ -1,11 +1,15 @@
-FC	:= ifort
+FC	:= ifx
 FCFLAGS	 = -std18
 FCFLAGS += -Ofast -xHOST
-FCFLAGS += -qopt-streaming-stores=always
 FCFLAGS += -qopt-zmm-usage=low
 
-DOCONCURRENT_FLAG   = -parallel -qopenmp
-ARRAY_FLAG          = -parallel -qopenmp
+ifeq ($(FC),ifort)
+    FCFLAGS += -qopt-streaming-stores=always
+    PARALLEL = -parallel
+endif
+
+DOCONCURRENT_FLAG   = $(PARALLEL) -qopenmp
+ARRAY_FLAG          = $(PARALLEL) -qopenmp
 OPENMP_FLAG         = -qopenmp
 ifeq ($(FC),ifx)
     OPENMP_FLAG += -fopenmp-targets=spir64
