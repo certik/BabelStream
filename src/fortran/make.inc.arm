@@ -1,9 +1,8 @@
-FC	:= gfortran
+FC	:= armflang
 FCFLAGS	:= -std=f2018 -O3
-FCFLAGS += -Wall -Wno-unused-dummy-argument -Wno-unused-variable
-#FCFLAGS += -mcpu=neoverse-v1
+FCFLAGS += -Wall -Wno-unused-variable
+FCFLAGS += -mcpu=neoverse-v1
 #FCFLAGS += -mcpu=neoverse-n1
-FCFLAGS += -march=icelake-server
 
 DOCONCURRENT_FLAG   =
 ARRAY_FLAG          =

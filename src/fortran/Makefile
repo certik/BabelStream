@@ -4,6 +4,8 @@ else ifeq ($(COMPILER),oneapi)
     include make.inc.oneapi
 else ifeq ($(COMPILER),gcc)
     include make.inc.gcc
+else ifeq ($(COMPILER),arm)
+    include make.inc.arm
 else ifeq ($(COMPILER),cray)
     include make.inc.cray
 else

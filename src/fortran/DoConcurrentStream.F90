@@ -65,7 +65,7 @@ module DoConcurrentStream
             implicit none
             real(kind=REAL64), intent(inout) :: h_A(:), h_B(:), h_C(:)
             integer(kind=StreamIntKind) :: i
-            do concurrent (i=1:N) shared(A,B,C)
+            do concurrent (i=1:N) !shared(A,B,C)
                h_A(i) = A(i)
                h_B(i) = B(i)
                h_C(i) = C(i)
@@ -75,7 +75,7 @@ module DoConcurrentStream
         subroutine copy()
             implicit none
             integer(kind=StreamIntKind) :: i
-            do concurrent (i=1:N) shared(A,C)
+            do concurrent (i=1:N) !shared(A,C)
                C(i) = A(i)
             end do
         end subroutine copy
@@ -83,7 +83,7 @@ module DoConcurrentStream
         subroutine add()
             implicit none
             integer(kind=StreamIntKind) :: i
-            do concurrent (i=1:N) shared(A,B,C)
+            do concurrent (i=1:N) !shared(A,B,C)
                C(i) = A(i) + B(i)
             end do
         end subroutine add
@@ -94,7 +94,7 @@ module DoConcurrentStream
             real(kind=REAL64) :: scalar
             integer(kind=StreamIntKind) :: i
             scalar = startScalar
-            do concurrent (i=1:N) shared(B,C)
+            do concurrent (i=1:N) !shared(B,C)
                B(i) = scalar * C(i)
             end do
         end subroutine mul
@@ -105,7 +105,7 @@ module DoConcurrentStream
             real(kind=REAL64) :: scalar
             integer(kind=StreamIntKind) :: i
             scalar = startScalar
-            do concurrent (i=1:N) shared(A,B,C)
+            do concurrent (i=1:N) !shared(A,B,C)
                A(i) = B(i) + scalar * C(i)
             end do
         end subroutine triad
@@ -116,7 +116,7 @@ module DoConcurrentStream
             real(kind=REAL64) :: scalar
             integer(kind=StreamIntKind) :: i
             scalar = startScalar
-            do concurrent (i=1:N) shared(A,B,C)
+            do concurrent (i=1:N) !shared(A,B,C)
                A(i) = A(i) + B(i) + scalar * C(i)
             end do
         end subroutine nstream
@@ -130,7 +130,7 @@ module DoConcurrentStream
 #ifdef CRAY_THREAD_DOCONCURRENT
             do i=1,N
 #else
-            do concurrent (i=1:N) shared(A,B)
+            do concurrent (i=1:N) !shared(A,B)
 #endif
                s = s + A(i) * B(i)
             end do
