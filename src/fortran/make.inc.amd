@@ -1,0 +1,19 @@
+FC	:= /opt/rocm/llvm/bin/flang
+FCFLAGS	:= -std=f2018 -O3 -ffast-math
+FCFLAGS += -Wall -Wno-unused-variable
+FCFLAGS += 
+
+DOCONCURRENT_FLAG   =
+ARRAY_FLAG          =
+OPENMP_FLAG         = -fopenmp
+OPENMP_FLAG        += -fopenmp-targets=amdgcn-amd-amdhsa -Xopenmp-target=amdgcn-amd-amdhsa -march=gfx908
+OPENACC_FLAG        = -fopenacc
+CUDA_FLAG           =
+SEQUENTIAL_FLAG     =
+
+ifeq ($(IMPLEMENTATION),CUDA)
+    $(error IMPLEMENTATION=$(IMPLEMENTATION) is not supported by this compiler.)
+endif
+ifeq ($(IMPLEMENTATION),CUDAKernels)
+    $(error IMPLEMENTATION=$(IMPLEMENTATION) is not supported by this compiler.)
+endif
