@@ -10,8 +10,10 @@ else ifeq ($(COMPILER),arm)
     include make.inc.arm
 else ifeq ($(COMPILER),cray)
     include make.inc.cray
+else ifeq ($(COMPILER),fj)
+    include make.inc.fj
 else
-    $(info Set COMPILER={nvhpc,oneapi}. Default is gcc.)
+    $(info Set COMPILER={nvhpc,oneapi,amd,arm,cray,fj,gcc}. Default is gcc.)
     include make.inc.gcc
 endif
 

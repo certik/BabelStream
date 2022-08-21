@@ -22,12 +22,19 @@ module BabelStreamUtil
     contains
 
         function get_wtime() result(t)
+#ifdef USE_OPENMP_TIMERS
+          use omp_lib
+          implicit none
+          real(kind=REAL64) ::  t
+          t = omp_get_wtime()
+#else
           use, intrinsic :: ISO_Fortran_env
           implicit none
           real(kind=REAL64) ::  t
           integer(kind=INT64) :: c, r
           call system_clock(count = c, count_rate = r)
           t = real(c,REAL64) / real(r,REAL64)
+#endif
         end function get_wtime
 
         subroutine parseArguments()
