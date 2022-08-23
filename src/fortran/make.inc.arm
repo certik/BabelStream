@@ -6,7 +6,7 @@ FCFLAGS += -Wall -Wno-unused-variable
 ifdef $(MARCH)
 FCFLAGS += -march=$(MARCH)
 else
-FCFLAGS += -march=host
+FCFLAGS += -march=native
 endif
 
 DOCONCURRENT_FLAG   =
