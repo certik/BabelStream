@@ -1,7 +1,7 @@
 #!/bin/bash
 
-for compiler in oneapi gcc nvhpc ; do
-    for implementation in DoConcurrent Array OpenMP OpenMPWorkshare OpenMPTarget OpenMPTargetLoop OpenMPTaskloop OpenACC OpenACCArray CUDA CUDAKernel ; do
+for compiler in arm gcc nvhpc ; do
+    for implementation in DoConcurrent Array OpenMP OpenMPTaskloop OpenMPWorkshare OpenACC OpenACCArray ; do
         make COMPILER=${compiler} IMPLEMENTATION=${implementation}
     done
 done

@@ -1,11 +1,11 @@
-FC	:= armflang
+FC	:= /opt/arm/22.0.1/arm-linux-compiler-22.0.1_Generic-AArch64_Ubuntu-20.04_aarch64-linux/bin/armflang
 FCFLAGS	:= -std=f2018 -O3
 FCFLAGS += -Wall -Wno-unused-variable
-FCFLAGS += -mcpu=neoverse-v1
-#FCFLAGS += -mcpu=neoverse-n1
+#FCFLAGS += -mcpu=neoverse-v1
+FCFLAGS += -mcpu=neoverse-n1
 
-DOCONCURRENT_FLAG   =
-ARRAY_FLAG          =
+DOCONCURRENT_FLAG   = -fopenmp
+ARRAY_FLAG          = -fopenmp
 OPENMP_FLAG         = -fopenmp
 OPENACC_FLAG        = -fopenacc
 CUDA_FLAG           =
