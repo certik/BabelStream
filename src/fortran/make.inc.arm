@@ -1,13 +1,15 @@
-FC	:= armflang
+FC	:= /samsung/ARM/arm-linux-compiler-22.0.2_Generic-AArch64_Ubuntu-20.04_aarch64-linux/bin/armflang
 FCFLAGS	:= -std=f2018 -O3
 FCFLAGS += -Wall -Wno-unused-variable
 
-# MARCH=neoverse-v1,neoverse-n1,icelake-server,znver3
+# MARCH=neoverse-v1,neoverse-n1,icelake-server,znver3,cortex-a78
 ifdef $(MARCH)
 FCFLAGS += -march=$(MARCH)
 else
 FCFLAGS += -march=native
 endif
+
+FCFLAGS += -Wl,-rpath=/samsung/ARM/arm-linux-compiler-22.0.2_Generic-AArch64_Ubuntu-20.04_aarch64-linux/lib
 
 DOCONCURRENT_FLAG   = -fopenmp
 ARRAY_FLAG          = -fopenmp
@@ -16,6 +18,12 @@ OPENACC_FLAG        = -fopenacc
 CUDA_FLAG           =
 SEQUENTIAL_FLAG     =
 
+ifeq ($(IMPLEMENTATION),OpenACC)
+    $(error IMPLEMENTATION=$(IMPLEMENTATION) is not supported by this compiler.)
+endif
+ifeq ($(IMPLEMENTATION),OpenACCArray)
+    $(error IMPLEMENTATION=$(IMPLEMENTATION) is not supported by this compiler.)
+endif
 ifeq ($(IMPLEMENTATION),CUDA)
     $(error IMPLEMENTATION=$(IMPLEMENTATION) is not supported by this compiler.)
 endif

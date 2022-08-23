@@ -1,13 +1,15 @@
-FC	:= gfortran
+FC	:= /samsung/GCC/12.2.0/bin/gfortran-12
 FCFLAGS	:= -std=f2018 -O3
 FCFLAGS += -Wall -Wno-unused-dummy-argument -Wno-unused-variable
 
-# MARCH=neoverse-v1,neoverse-n1,icelake-server,znver3
+# MARCH=neoverse-v1,neoverse-n1,icelake-server,znver3,cortex-a78ae
 ifdef $(MARCH)
 FCFLAGS += -march=$(MARCH)
 else
 FCFLAGS += -march=native
 endif
+
+FCFLAGS += -Wl,-rpath=/samsung/GCC/12.2.0/lib64
 
 DOCONCURRENT_FLAG   =
 ARRAY_FLAG          =
