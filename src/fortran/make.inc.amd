@@ -1,8 +1,13 @@
 FC  := /opt/rocm/llvm/bin/flang
 FC	:= /global/u1/j/jhammond/AMD/aocc-compiler-3.2.0/bin/flang
-FCFLAGS	:= -std=f2018 -O3 -ffast-math
+FCFLAGS	:= -std=f2018 -O3
 FCFLAGS += -Wall -Wno-unused-variable
-FCFLAGS += -march=znver3
+
+ifdef $(MARCH)
+FCFLAGS += -march=$(MARCH)
+else
+FCFLAGS += -march=host
+endif
 
 DOCONCURRENT_FLAG   = -fopenmp # libomp.so required
 ARRAY_FLAG          = -fopenmp # libomp.so required
