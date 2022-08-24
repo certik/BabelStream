@@ -1,5 +1,5 @@
 FC	:= frt
-FCFLAGS	 = -X08 -Kfast -KA64FX -KSVE -KARMV8_3_A -Kzfill=100 -Kprefetch_sequential=soft -Kprefetch_line=8 -Kprefetch_line_L2=16 -Koptmsg=2 -Keval -DUSE_OPENMP_TIMES=1 # FJ Fortran system_clock is low resolution
+FCFLAGS	 = -X08 -Kfast -KA64FX -KSVE -KARMV8_3_A -Kzfill=100 -Kprefetch_sequential=soft -Kprefetch_line=8 -Kprefetch_line_L2=16 -Koptmsg=2 -Keval -DUSE_OPENMP_TIMERS=1 # FJ Fortran system_clock is low resolution
 
 DOCONCURRENT_FLAG   = -Kparallel,reduction -DNOTSHARED
 ARRAY_FLAG          = -Kparallel,reduction
