@@ -21,7 +21,7 @@ for compiler in ${COMPILERS} ; do
             TARGETS="${TARGETS} CUDA CUDAKernel"
         fi
     fi
-    if [ "x${compiler}" == "xnvhpc" ] || [ "x${compiler}" == "xgcc" ] ;[ "x${compiler}" == "xcray" ] ; then
+    if [ "x${compiler}" == "xnvhpc" ] || [ "x${compiler}" == "xgcc" ] || [ "x${compiler}" == "xcray" ] ; then
         TARGETS="${TARGETS} OpenACC OpenACCArray"
     fi
     for implementation in ${TARGETS} ; do
