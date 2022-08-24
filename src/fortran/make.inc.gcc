@@ -3,7 +3,7 @@ FCFLAGS	:= -std=f2018 -O3
 FCFLAGS += -Wall -Wno-unused-dummy-argument -Wno-unused-variable
 
 # MARCH=neoverse-v1,neoverse-n1,icelake-server,znver3
-ifdef $(MARCH)
+ifdef MARCH
 FCFLAGS += -march=$(MARCH)
 else
 FCFLAGS += -march=native

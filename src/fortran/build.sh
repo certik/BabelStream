@@ -3,7 +3,8 @@
 COMPILERS="gcc"
 if [ $(uname -m) != "arm64" ] ; then
     COMPILERS="${COMPILERS} nvhpc"
-elif [ $(uname -m) == "aarch64" ] ; then
+fi
+if [ $(uname -m) == "aarch64" ] ; then
     COMPILERS="${COMPILERS} arm cray fj"
 elif [ $(uname -m) == "x86_64" ] ; then
     COMPILERS="${COMPILERS} oneapi amd cray"

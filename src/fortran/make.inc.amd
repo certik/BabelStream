@@ -3,7 +3,7 @@ FC	:= /global/u1/j/jhammond/AMD/aocc-compiler-3.2.0/bin/flang
 FCFLAGS	:= -std=f2018 -O3
 FCFLAGS += -Wall -Wno-unused-variable
 
-ifdef $(MARCH)
+ifdef MARCH
 FCFLAGS += -march=$(MARCH)
 else
 FCFLAGS += -march=native
