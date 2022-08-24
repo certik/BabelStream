@@ -3,10 +3,21 @@ FC	:= nvfortran
 FCFLAGS	:= -O3 -Minform=warn
 
 # MARCH=neoverse-v1,neoverse-n1,zen3
+ARCH=$(shell uname -m)
 ifdef MARCH
-FCFLAGS += -tp=$(MARCH)
+  ifeq ($(ARCH),aarch64)
+    ifeq ($(MARCH),neoverse-n1)
+      FCFLAGS += -tp=$(MARCH)
+    elifeq ($(MARCH),neoverse-v1)
+      FCFLAGS += -tp=$(MARCH)
+    else
+      FCFLAGS += -tp=native
+    endif
+  else
+    FCFLAGS += -tp=$(MARCH)
+  endif
 else
-FCFLAGS += -tp=native
+  FCFLAGS += -tp=native
 endif
 
 #TARGET=gpu
