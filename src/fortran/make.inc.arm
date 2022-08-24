@@ -1,15 +1,22 @@
-FC	:= /samsung/ARM/arm-linux-compiler-22.0.2_Generic-AArch64_Ubuntu-20.04_aarch64-linux/bin/armflang
-FCFLAGS	:= -std=f2018 -O3
+FC       = armflang
+FCFLAGS  = -std=f2018 -O3
 FCFLAGS += -Wall -Wno-unused-variable
 
 # MARCH=neoverse-v1,neoverse-n1,icelake-server,znver3,cortex-a78
-ifdef $(MARCH)
-FCFLAGS += -march=$(MARCH)
+ARCH=$(shell uname -m)
+ifeq ($(ARCH),aarch64)
+     ifdef MCPU
+         FCFLAGS += -mcpu=$(MCPU)
+     else
+         FCFLAGS += -mcpu=native
+     endif
 else
-FCFLAGS += -march=native
+     ifdef MARCH
+         FCFLAGS += -march=$(MARCH)
+     else
+         FCFLAGS += -march=native
+     endif
 endif
-
-FCFLAGS += -Wl,-rpath=/samsung/ARM/arm-linux-compiler-22.0.2_Generic-AArch64_Ubuntu-20.04_aarch64-linux/lib
 
 DOCONCURRENT_FLAG   = -fopenmp
 ARRAY_FLAG          = -fopenmp

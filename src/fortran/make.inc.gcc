@@ -1,12 +1,21 @@
-FC	:= /samsung/GCC/12.2.0/bin/gfortran-12
-FCFLAGS	:= -std=f2018 -O3
+FC       = gfortran
+FCFLAGS  = -std=f2018 -O3
 FCFLAGS += -Wall -Wno-unused-dummy-argument -Wno-unused-variable
 
 # MARCH=neoverse-v1,neoverse-n1,icelake-server,znver3,cortex-a78ae
-ifdef $(MARCH)
-FCFLAGS += -march=$(MARCH)
+ARCH=$(shell uname -m)
+ifeq ($(ARCH),aarch64)
+     ifdef MCPU
+         FCFLAGS += -mcpu=$(MCPU)
+     else
+         FCFLAGS += -mcpu=native
+     endif
 else
-FCFLAGS += -march=native
+     ifdef MARCH
+         FCFLAGS += -march=$(MARCH)
+     else
+         FCFLAGS += -march=native
+     endif
 endif
 
 FCFLAGS += -Wl,-rpath=/samsung/GCC/12.2.0/lib64

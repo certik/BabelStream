@@ -15,6 +15,7 @@ else ifeq ($(COMPILER),fj)
 else
     $(info Set COMPILER={nvhpc,oneapi,amd,arm,cray,fj,gcc}. Default is gcc.)
     include make.inc.gcc
+    COMPILER=gcc
 endif
 
 FCFLAGS += -DVERSION_STRING="4.0"
@@ -70,6 +71,7 @@ else ifeq ($(IMPLEMENTATION),Sequential)
 else
     $(info Set IMPLEMENTATION={DoConcurrent,Array,OpenMP,OpenMPWorkshare,OpenMPTarget,OpenMPTargetLoop,OpenMPTaskloop,OpenACC,OpenACCArray,CUDA,CUDAKernel}.)
     FCFLAGS += -DUSE_SEQUENTIAL $(SEQUENTIAL_FLAG)
+    IMPLEMENTATION=Sequential
     IMPLEMENTATION_OBJECT = SequentialStream.o
 
 endif
