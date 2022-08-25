@@ -18,8 +18,6 @@ else
      endif
 endif
 
-FCFLAGS += -Wl,-rpath=/samsung/GCC/12.2.0/lib64
-
 DOCONCURRENT_FLAG   =
 ARRAY_FLAG          =
 OPENMP_FLAG         = -fopenmp
