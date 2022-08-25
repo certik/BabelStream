@@ -19,11 +19,14 @@ ifeq ($(findstring Pascal,$(NVARCH)),Pascal)
     $(info Pascal detected)
     GPU = cc60,cc61
 endif
-ifeq ($(shell which jetson_clocks && echo 1),1)
+ifeq ($(shell which jetson_clocks > /dev/null  && echo 1),1)
     $(info Jetson AGX Orin detected)
     GPU = ccn87,cc86
     # figure out Xavier later
     #GPU = cc72
+endif
+ifeq ($(GPU),)
+    $(error Your GPU architecture could not be detected. Set it manually.)
 endif
 GPUFLAG = -gpu=$(GPU)
 
