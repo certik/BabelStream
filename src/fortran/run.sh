@@ -12,7 +12,7 @@ fi
 
 M=128
 
-export OMP_NUM_THREADS=32
+export OMP_NUM_THREADS=12
 export OMP_PROC_BIND=close
 export OMP_PLACES=threads
 
@@ -24,7 +24,7 @@ for compiler in gcc nvhpc cray oneapi arm amd fj ; do
     for implementation in OpenMP OpenMPTaskloop OpenMPWorkshare DoConcurrent Array OpenACC OpenACCArray CUDA CUDAKernel ; do
         if [ -f BabelStream.${compiler}.${implementation} ] ; then
             echo "BabelStream.${compiler}.${implementation}"
-            $AFFCONTROL \
+            time $AFFCONTROL \
             ./BabelStream.${compiler}.${implementation} -s $((1024*1024*${M}))
         fi
     done
