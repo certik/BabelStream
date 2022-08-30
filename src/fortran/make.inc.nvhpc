@@ -2,6 +2,9 @@ FC	:= nvfortran
 #FCFLAGS	:= -O3 -Minform=inform -Minfo=all
 FCFLAGS	:= -O3 -Minform=warn
 
+TARGET=gpu
+#TARGET=multicore
+
 NVARCH=$(shell which nvidia-smi > /dev/null && nvidia-smi -q | grep "Product Architecture")
 ifeq ($(findstring Ampere,$(NVARCH)),Ampere)
     $(info Ampere detected)
@@ -29,9 +32,6 @@ ifeq ($(GPU),)
     $(error Your GPU architecture could not be detected. Set it manually.)
 endif
 GPUFLAG = -gpu=$(GPU)
-
-TARGET=gpu
-#TARGET=multicore
 
 # MARCH=neoverse-v1,neoverse-n1,zen3
 ARCH=$(shell uname -m)
