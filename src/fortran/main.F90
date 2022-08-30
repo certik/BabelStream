@@ -334,6 +334,7 @@ module BabelStreamUtil
         end subroutine run_nstream
 
         subroutine check_solution(A, B, C, summ)
+            use, intrinsic :: IEEE_Arithmetic, only: IEEE_Is_Normal
             implicit none
             real(kind=REAL64), intent(in) :: A(:), B(:), C(:)
             real(kind=REAL64), intent(in) :: summ
@@ -344,6 +345,7 @@ module BabelStreamUtil
 
             ! always use double because of accumulation error
             real(kind=REAL64) :: errA, errB, errC, errSum, epsi
+            logical :: cleanA, cleanB, cleanC, cleanSum
 
             goldA = startA
             goldB = startB
@@ -369,25 +371,30 @@ module BabelStreamUtil
 
             goldSum = goldA * goldB * array_size
 
+            cleanA = ALL(IEEE_Is_Normal(A))
+            cleanB = ALL(IEEE_Is_Normal(B))
+            cleanC = ALL(IEEE_Is_Normal(C))
+            cleanSum = IEEE_Is_Normal(summ)
+
             errA = SUM( ABS( A - goldA ) ) / array_size
             errB = SUM( ABS( B - goldB ) ) / array_size
             errC = SUM( ABS( C - goldC ) ) / array_size
             errSum = ABS( (summ - goldSum) /  goldSum)
 
-            epsi = epsilon(real(0,kind=REAL64)) * 100.0d0
+            epsi = epsilon(real(0,kind=StreamRealKind)) * 100.0d0
 
-            if (errA .gt. epsi) then
+            if (.not.cleanA .or. .not.(errA .lt. epsi)) then
                 write(*,'(a38,e20.12)') "Validation failed on A. Average error ", errA
             end if
-            if (errB .gt. epsi) then
+            if (.not.cleanB .or. .not.(errB .lt. epsi)) then
                 write(*,'(a38,e20.12)') "Validation failed on B. Average error ", errB
             end if
-            if (errC .gt. epsi) then
+            if (.not.cleanC .or. .not.(errC .lt. epsi)) then
                 write(*,'(a38,e20.12)') "Validation failed on C. Average error ", errC
             end if
 
             if (selection.eq.1) then
-                if (errSum .gt. 1.0e-8) then
+                if (.not.cleanSum .or. .not.(errSum .lt. epsi)) then
                     write(*,'(a38,e20.12)') "Validation failed on Sum. Error ", errSum
                     write(*,'(a8,e20.12,a15,e20.12)') "Sum was ",summ, " but should be ", errSum
                 end if
