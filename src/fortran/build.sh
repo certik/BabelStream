@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # uncomment to disable GPU targets
-HAS_GPU=0
+#HAS_GPU=0
 
 COMPILERS="gcc"
 if [ $(which nvfortran) ] ; then
@@ -20,6 +20,9 @@ if [ $(uname -m) == "aarch64" ] ; then
 elif [ $(uname -m) == "x86_64" ] ; then
     if [ $(which lscpu >& /dev/null && lscpu | grep GenuineIntel | awk '{print $3}') == "GenuineIntel" ] ; then
         COMPILERS="${COMPILERS} oneapi"
+        if [ -f /opt/intel/oneapi/setvars.sh ] ; then
+            . /opt/intel/oneapi/setvars.sh >& /dev/null
+        fi
     else
         # ^ this detection can be improved
         COMPILERS="${COMPILERS} amd"
