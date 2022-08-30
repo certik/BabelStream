@@ -4,7 +4,6 @@ module BabelStreamTypes
     implicit none
 
 #ifdef USE_FLOAT
-#warning Bad
     integer, parameter :: StreamRealKind = REAL32
     character(len=6)   :: StreamRealName = "REAL32"
 #else
