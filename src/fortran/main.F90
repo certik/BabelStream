@@ -162,8 +162,8 @@ module BabelStreamUtil
                     pos(1) = index(argtmp,"--csv")
                     if (pos(1).eq.1) then
                         csv = .true.
-                        write(*,'(a39)') "Sorry, CSV support isn't available yet."
-                        stop
+                        !write(*,'(a39)') "Sorry, CSV support isn't available yet."
+                        !stop
                     endif
                     !
                     ! units
@@ -453,28 +453,33 @@ program BabelStream
 
     call parseArguments()
 
-    write(*,'(a)')        "BabelStream Fortran"
-    write(*,'(a9,f4.1)')  "Version: ", VERSION_STRING
-    write(*,'(a16,a)')    "Implementation: ", implementation_name
+    element_size = storage_size(real(0,kind=StreamRealKind)) / 8
 
-    block
-      character(len=32) :: printout
-      write(printout,'(i9,1x,a5)') num_times,'times'
-      write(*,'(a16,a)') 'Running kernels ',ADJUSTL(printout)
-    end block
-    write(*,'(a11,a6)') 'Precision: ',ADJUSTL(StreamRealName)
-
-    element_size = storage_size(real(0,kind=REAL64)) / 8
     if (mibibytes) then
-        scaling = 2.0d0**(-20)
-        label   = "MiB"
+      scaling = 2.0d0**(-20)
+      label   = "MiB"
     else
-        scaling = 1.0d-6
-        label   = "MB"
+      scaling = 1.0d-6
+      label   = "MB"
     endif
 
-    write(*,'(a12,f9.1,a3)') 'Array size: ',1.0d0 * array_size * element_size * scaling, label
-    write(*,'(a12,f9.1,a3)') 'Total size: ',3.0d0 * array_size * element_size * scaling, label
+    if (.not.csv) then
+
+      write(*,'(a)')        "BabelStream Fortran"
+      write(*,'(a9,f4.1)')  "Version: ", VERSION_STRING
+      write(*,'(a16,a)')    "Implementation: ", implementation_name
+
+      block
+        character(len=32) :: printout
+        write(printout,'(i9,1x,a5)') num_times,'times'
+        write(*,'(a16,a)') 'Running kernels ',ADJUSTL(printout)
+      end block
+      write(*,'(a11,a6)') 'Precision: ',ADJUSTL(StreamRealName)
+
+      write(*,'(a12,f9.1,a3)') 'Array size: ',1.0d0 * array_size * element_size * scaling, label
+      write(*,'(a12,f9.1,a3)') 'Total size: ',3.0d0 * array_size * element_size * scaling, label
+
+    endif ! csv
 
     allocate( timings(5,num_times) )
 
@@ -505,12 +510,16 @@ program BabelStream
       character(len=12) :: printout(5)
       real(kind=REAL64) :: tmin,tmax,tavg,nbytes
       
-      write(printout(1),'(a8)')   'Function'
-      write(printout(2),'(a3,a8)') TRIM(label),'ytes/sec'
-      write(printout(3),'(a9)')   'Min (sec)'
-      write(printout(4),'(a3)')   'Max'
-      write(printout(5),'(a7)')   'Average'
-      write(*,'(5a12)') ADJUSTL(printout(1:5))
+      if (csv) then
+        write(*,'(a91)')  'function,num_times,n_elements,sizeof,max_mbytes_per_sec,min_runtime,max_runtime,avg_runtime'
+      else
+        write(printout(1),'(a8)')   'Function'
+        write(printout(2),'(a3,a8)') TRIM(label),'ytes/sec'
+        write(printout(3),'(a9)')   'Min (sec)'
+        write(printout(4),'(a3)')   'Max'
+        write(printout(5),'(a7)')   'Average'
+        write(*,'(5a12)') ADJUSTL(printout(1:5))
+      endif ! csv
     
       if (selection.eq.1) then
         block
@@ -522,12 +531,15 @@ program BabelStream
             tmax = MAXVAL(timings(i,2:num_times))
             tavg = SUM(timings(i,2:num_times)) / num_times
             nbytes = element_size * array_size * sizes(i)
-            write(printout(1),'(a12)')   labels(i)
-            write(printout(2),'(f12.3)') scaling*nbytes/tmin
-            write(printout(3),'(f12.5)') tmin
-            write(printout(4),'(f12.5)') tmax
-            write(printout(5),'(f12.5)') tavg
-            write(*,'(5a12)') ADJUSTL(printout(1:5))
+            if (csv) then
+            else
+              write(printout(1),'(a12)')   labels(i)
+              write(printout(2),'(f12.3)') scaling*nbytes/tmin
+              write(printout(3),'(f12.5)') tmin
+              write(printout(4),'(f12.5)') tmax
+              write(printout(5),'(f12.5)') tavg
+              write(*,'(5a12)') ADJUSTL(printout(1:5))
+            endif
           enddo
         end block
       else if ((selection.eq.2).or.(selection.eq.3)) then
