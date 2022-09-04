@@ -8,6 +8,7 @@ module BabelStreamUtil
     integer(kind=StreamIntKind) :: num_times  = 100
     logical                     :: mibibytes  = .false.
     logical                     :: csv        = .false.
+    character(len=1), parameter :: csv_sep    = ","
 
     ! 1 = All
     ! 2 = Triad
@@ -520,11 +521,22 @@ program BabelStream
     call check_solution(h_A, h_B, h_C, summ)
 
     block
-      character(len=12) :: printout(5)
+      character(len=20) :: printout(8)
       real(kind=REAL64) :: tmin,tmax,tavg,nbytes
       
       if (csv) then
-        write(*,'(a91)')  'function,num_times,n_elements,sizeof,max_mbytes_per_sec,min_runtime,max_runtime,avg_runtime'
+        write(*,'(a,a1)',advance='no')  'function',  csv_sep
+        write(*,'(a,a1)',advance='no')  'num_times', csv_sep
+        write(*,'(a,a1)',advance='no')  'n_elements',csv_sep
+        write(*,'(a,a1)',advance='no')  'sizeof',    csv_sep
+        if (mibibytes) then
+          write(*,'(a,a1)',advance='no')  'max_mibytes_per_sec',csv_sep
+        else
+          write(*,'(a,a1)',advance='no')  'max_mbytes_per_sec', csv_sep
+        endif
+        write(*,'(a,a1)',advance='no')  'min_runtime',csv_sep
+        write(*,'(a,a1)',advance='no')  'max_runtime',csv_sep
+        write(*,'(a,a1)',advance='yes') 'avg_runtime'
       else
         write(printout(1),'(a8)')   'Function'
         write(printout(2),'(a3,a8)') TRIM(label),'ytes/sec'
@@ -542,11 +554,26 @@ program BabelStream
           do i=1,5
             tmin = MINVAL(timings(i,2:num_times))
             tmax = MAXVAL(timings(i,2:num_times))
-            tavg = SUM(timings(i,2:num_times)) / num_times
+            tavg = SUM(timings(i,2:num_times)) / (num_times-1)
             nbytes = element_size * array_size * sizes(i)
+            write(printout(1),'(a)')     labels(i)
             if (csv) then
+              write(printout(2),'(i20)')   num_times
+              write(printout(3),'(i20)')   array_size
+              write(printout(4),'(i20)')   element_size
+              write(printout(5),'(i20)')   INT(scaling*nbytes/tmin)
+              write(printout(6),'(f20.8)') tmin
+              write(printout(7),'(f20.8)') tmax
+              write(printout(8),'(f20.8)') tavg
+              write(*,'(a,a1)',advance='no')  TRIM(ADJUSTL(printout(1))),csv_sep
+              write(*,'(a,a1)',advance='no')  TRIM(ADJUSTL(printout(2))),csv_sep
+              write(*,'(a,a1)',advance='no')  TRIM(ADJUSTL(printout(3))),csv_sep
+              write(*,'(a,a1)',advance='no')  TRIM(ADJUSTL(printout(4))),csv_sep
+              write(*,'(a,a1)',advance='no')  TRIM(ADJUSTL(printout(5))),csv_sep
+              write(*,'(a,a1)',advance='no')  TRIM(ADJUSTL(printout(6))),csv_sep
+              write(*,'(a,a1)',advance='no')  TRIM(ADJUSTL(printout(7))),csv_sep
+              write(*,'(a,a1)',advance='yes') TRIM(ADJUSTL(printout(8)))
             else
-              write(printout(1),'(a12)')   labels(i)
               write(printout(2),'(f12.3)') scaling*nbytes/tmin
               write(printout(3),'(f12.5)') tmin
               write(printout(4),'(f12.5)') tmax
@@ -556,21 +583,39 @@ program BabelStream
           enddo
         end block
       else if ((selection.eq.2).or.(selection.eq.3)) then
-            tmin = MINVAL(timings(1,2:num_times))
-            tmax = MAXVAL(timings(1,2:num_times))
-            tavg = SUM(timings(1,2:num_times)) / num_times
-            if (selection.eq.2) then
-              nbytes = element_size * array_size * 3
-              write(printout(1),'(a12)')   "Triad"
-            else if (selection.eq.3) then
-              nbytes = element_size * array_size * 4
-              write(printout(1),'(a12)')   "Nstream"
-            endif
-            write(printout(2),'(f12.3)') scaling*nbytes/tmin
-            write(printout(3),'(f12.5)') tmin
-            write(printout(4),'(f12.5)') tmax
-            write(printout(5),'(f12.5)') tavg
-            write(*,'(5a12)') ADJUSTL(printout(1:5))
+        tmin = MINVAL(timings(1,2:num_times))
+        tmax = MAXVAL(timings(1,2:num_times))
+        tavg = SUM(timings(1,2:num_times)) / (num_times-1)
+        if (selection.eq.2) then
+          nbytes = element_size * array_size * 3
+          write(printout(1),'(a12)')   "Triad"
+        else if (selection.eq.3) then
+          nbytes = element_size * array_size * 4
+          write(printout(1),'(a12)')   "Nstream"
+        endif
+        if (csv) then
+          write(printout(2),'(i20)')   num_times
+          write(printout(3),'(i20)')   array_size
+          write(printout(4),'(i20)')   element_size
+          write(printout(5),'(i20)')   INT(scaling*nbytes/tmin)
+          write(printout(6),'(f20.8)') tmin
+          write(printout(7),'(f20.8)') tmax
+          write(printout(8),'(f20.8)') tavg
+          write(*,'(a,a1)',advance='no')  TRIM(ADJUSTL(printout(1))),csv_sep
+          write(*,'(a,a1)',advance='no')  TRIM(ADJUSTL(printout(2))),csv_sep
+          write(*,'(a,a1)',advance='no')  TRIM(ADJUSTL(printout(3))),csv_sep
+          write(*,'(a,a1)',advance='no')  TRIM(ADJUSTL(printout(4))),csv_sep
+          write(*,'(a,a1)',advance='no')  TRIM(ADJUSTL(printout(5))),csv_sep
+          write(*,'(a,a1)',advance='no')  TRIM(ADJUSTL(printout(6))),csv_sep
+          write(*,'(a,a1)',advance='no')  TRIM(ADJUSTL(printout(7))),csv_sep
+          write(*,'(a,a1)',advance='yes') TRIM(ADJUSTL(printout(8)))
+        else
+          write(printout(2),'(f12.3)') scaling*nbytes/tmin
+          write(printout(3),'(f12.5)') tmin
+          write(printout(4),'(f12.5)') tmax
+          write(printout(5),'(f12.5)') tavg
+          write(*,'(5a12)') ADJUSTL(printout(1:5))
+        endif
       endif
     end block
 
