@@ -92,7 +92,7 @@ module BabelStreamUtil
                     pos(1) = index(argtmp,"--device")
                     if (pos(1).eq.1) then
                         if (i+1.gt.argc) then
-                            print*,'You failed to provide a value for ',argtmp,'SHIT'
+                            print*,'You failed to provide a value for ',argtmp
                             stop
                         else
                             call get_command_argument(i+1,argtmp,arglen,err)
@@ -111,7 +111,7 @@ module BabelStreamUtil
                     pos(2) = index(argtmp,"-s")
                     if (any(pos(:).eq.1) ) then
                         if (i+1.gt.argc) then
-                            print*,'You failed to provide a value for ',argtmp,'ASS'
+                            print*,'You failed to provide a value for ',argtmp
                         else
                             call get_command_argument(i+1,argtmp,arglen,err)
                             read(argtmp,'(i15)') array_size
