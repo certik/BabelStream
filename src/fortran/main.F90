@@ -183,8 +183,15 @@ module BabelStreamUtil
                         write(*,'(a7,a,a10)') "Usage: ", trim(argtmp), " [OPTIONS]"
                         write(*,'(a)') "Options:"
                         write(*,'(a)') "  -h  --help               Print the message"
+                        write(*,'(a)') "      --list               List available devices"
+                        write(*,'(a)') "      --device     INDEX   Select device at INDEX"
                         write(*,'(a)') "  -s  --arraysize  SIZE    Use SIZE elements in the array"
                         write(*,'(a)') "  -n  --numtimes   NUM     Run the test NUM times (NUM >= 2)"
+                        !write(*,'(a)') "      --float              Use floats (rather than doubles)"
+                        write(*,'(a)') "      --triad-only         Only run triad"
+                        write(*,'(a)') "      --nstream-only       Only run nstream"
+                        write(*,'(a)') "      --csv                Output as csv table"
+                        write(*,'(a)') "      --mibibytes          Use MiB=2^20 for bandwidth calculation (default MB=10^6)"
                         stop
                     endif
                 end if
