@@ -7,6 +7,7 @@ module BabelStreamUtil
     integer(kind=StreamIntKind) :: array_size = 33554432
     integer(kind=StreamIntKind) :: num_times  = 100
     logical                     :: mibibytes  = .false.
+    logical                     :: use_gigs   = .false.
     logical                     :: csv        = .false.
     character(len=1), parameter :: csv_sep    = ","
 
@@ -175,6 +176,14 @@ module BabelStreamUtil
                         cycle
                     endif
                     !
+                    ! giga/gibi instead of mega/mebi
+                    !
+                    pos(1) = index(argtmp,"--gigs")
+                    if (pos(1).eq.1) then
+                        use_gigs = .true.
+                        cycle
+                    endif
+                    !
                     ! help
                     !
                     pos(1) = index(argtmp,"--help")
@@ -193,6 +202,7 @@ module BabelStreamUtil
                         write(*,'(a)') "      --nstream-only       Only run nstream"
                         write(*,'(a)') "      --csv                Output as csv table"
                         write(*,'(a)') "      --mibibytes          Use MiB=2^20 for bandwidth calculation (default MB=10^6)"
+                        write(*,'(a)') "      --gigs               Use GiB=2^30 or GB=10^9 instead of MiB/MB"
                         stop
                     endif
                 end if
@@ -470,11 +480,21 @@ program BabelStream
     element_size = storage_size(real(0,kind=StreamRealKind)) / 8
 
     if (mibibytes) then
-      scaling = 2.0d0**(-20)
-      label   = "MiB"
+      if (use_gigs) then
+        scaling = 2.0d0**(-30)
+        label   = "GiB"
+      else
+        scaling = 2.0d0**(-20)
+        label   = "MiB"
+      endif
     else
-      scaling = 1.0d-6
-      label   = "MB"
+      if (use_gigs) then
+        scaling = 1.0d-9
+        label   = "GB"
+      else
+        scaling = 1.0d-6
+        label   = "MB"
+      endif
     endif
 
     if (.not.csv) then
