@@ -1,5 +1,5 @@
 module BabelStreamUtil
-    use, intrinsic :: ISO_Fortran_env
+    use, intrinsic :: ISO_Fortran_env, only: REAL64,INT64
     use BabelStreamTypes
 
     implicit none
@@ -22,15 +22,20 @@ module BabelStreamUtil
     contains
 
         function get_wtime() result(t)
-#ifdef USE_OPENMP_TIMERS
+#if defined(USE_OMP_GET_WTIME)
           use omp_lib
           implicit none
-          real(kind=REAL64) ::  t
+          real(kind=REAL64) :: t
           t = omp_get_wtime()
-#else
-          use, intrinsic :: ISO_Fortran_env
+#elif  defined(USE_CPU_TIME)
           implicit none
-          real(kind=REAL64) ::  t
+          real(kind=REAL64) :: t
+          real :: r
+          call cpu_time(r)
+          t = r
+#else
+          implicit none
+          real(kind=REAL64) :: t
           integer(kind=INT64) :: c, r
           call system_clock(count = c, count_rate = r)
           t = real(c,REAL64) / real(r,REAL64)

@@ -1,5 +1,5 @@
 module BabelStreamTypes
-    use, intrinsic :: ISO_Fortran_env
+    use, intrinsic :: ISO_Fortran_env, only: REAL64,REAL32,INT64,INT32
 
     implicit none
 
