@@ -376,6 +376,19 @@ module BabelStreamUtil
             cleanC = ALL(IEEE_Is_Normal(C))
             cleanSum = IEEE_Is_Normal(summ)
 
+            if (.not. cleanA) then
+                write(*,'(a51)') "Validation failed on A. Contains NaA/Inf/Subnormal."
+            end if
+            if (.not. cleanB) then
+                write(*,'(a51)') "Validation failed on B. Contains NaA/Inf/Subnormal."
+            end if
+            if (.not. cleanC) then
+                write(*,'(a51)') "Validation failed on C. Contains NaA/Inf/Subnormal."
+            end if
+            if (.not. cleanSum) then
+                write(*,'(a54,e20.12)') "Validation failed on Sum. Contains NaA/Inf/Subnormal: ",summ
+            end if
+
             errA = SUM( ABS( A - goldA ) ) / array_size
             errB = SUM( ABS( B - goldB ) ) / array_size
             errC = SUM( ABS( C - goldC ) ) / array_size
@@ -383,18 +396,18 @@ module BabelStreamUtil
 
             epsi = epsilon(real(0,kind=StreamRealKind)) * 100.0d0
 
-            if (.not.cleanA .or. .not.(errA .lt. epsi)) then
+            if (errA .gt. epsi) then
                 write(*,'(a38,e20.12)') "Validation failed on A. Average error ", errA
             end if
-            if (.not.cleanB .or. .not.(errB .lt. epsi)) then
+            if (errB .gt. epsi) then
                 write(*,'(a38,e20.12)') "Validation failed on B. Average error ", errB
             end if
-            if (.not.cleanC .or. .not.(errC .lt. epsi)) then
+            if (errC .gt. epsi) then
                 write(*,'(a38,e20.12)') "Validation failed on C. Average error ", errC
             end if
 
             if (selection.eq.1) then
-                if (.not.cleanSum .or. .not.(errSum .lt. epsi)) then
+                if (errSum .gt. 1.0e-8) then
                     write(*,'(a38,e20.12)') "Validation failed on Sum. Error ", errSum
                     write(*,'(a8,e20.12,a15,e20.12)') "Sum was ",summ, " but should be ", errSum
                 end if
