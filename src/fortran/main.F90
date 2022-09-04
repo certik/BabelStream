@@ -114,7 +114,18 @@ module BabelStreamUtil
                             print*,'You failed to provide a value for ',argtmp
                         else
                             call get_command_argument(i+1,argtmp,arglen,err)
-                            read(argtmp,'(i15)') array_size
+                            block
+                              integer(kind=INT64) :: big_size
+                              read(argtmp,'(i15)') big_size
+                              if (big_size .gt. HUGE(array_size)) then
+                                print*,'Array size does not fit into integer:'
+                                print*,big_size,'>',HUGE(array_size)
+                                print*,'Stop using USE_INT32'
+                                stop
+                              else
+                                array_size = INT(big_size,kind=StreamIntKind)
+                              endif
+                            end block
                         endif
                         cycle
                     endif
@@ -510,8 +521,8 @@ program BabelStream
       end block
       write(*,'(a11,a6)') 'Precision: ',ADJUSTL(StreamRealName)
 
-      write(*,'(a12,f9.1,a3)') 'Array size: ',1.0d0 * array_size * element_size * scaling, label
-      write(*,'(a12,f9.1,a3)') 'Total size: ',3.0d0 * array_size * element_size * scaling, label
+      write(*,'(a12,f9.1,a3)') 'Array size: ',1.0d0 * element_size * (array_size * scaling), label
+      write(*,'(a12,f9.1,a3)') 'Total size: ',3.0d0 * element_size * (array_size * scaling), label
 
     endif ! csv
 
@@ -575,7 +586,7 @@ program BabelStream
             tmin = MINVAL(timings(i,2:num_times))
             tmax = MAXVAL(timings(i,2:num_times))
             tavg = SUM(timings(i,2:num_times)) / (num_times-1)
-            nbytes = element_size * array_size * sizes(i)
+            nbytes = element_size * REAL(array_size,kind=REAL64) * sizes(i)
             write(printout(1),'(a)')     labels(i)
             if (csv) then
               write(printout(2),'(i20)')   num_times
@@ -607,10 +618,10 @@ program BabelStream
         tmax = MAXVAL(timings(1,2:num_times))
         tavg = SUM(timings(1,2:num_times)) / (num_times-1)
         if (selection.eq.2) then
-          nbytes = element_size * array_size * 3
+          nbytes = element_size * REAL(array_size,kind=REAL64) * 3
           write(printout(1),'(a12)')   "Triad"
         else if (selection.eq.3) then
-          nbytes = element_size * array_size * 4
+          nbytes = element_size * REAL(array_size,kind=REAL64) * 4
           write(printout(1),'(a12)')   "Nstream"
         endif
         if (csv) then
