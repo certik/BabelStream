@@ -45,6 +45,7 @@ module BabelStreamUtil
         end function get_wtime
 
         subroutine parseArguments()
+            use, intrinsic :: ISO_Fortran_env, only: compiler_version, compiler_options
 #if defined(USE_DOCONCURRENT)
             use DoConcurrentStream, only: list_devices, set_device
 #elif defined(USE_ARRAY)
@@ -195,6 +196,15 @@ module BabelStreamUtil
                         cycle
                     endif
                     !
+                    !
+                    !
+                    pos(1) = index(argtmp,"--compiler-info")
+                    if (pos(1).eq.1) then
+                        write(*,'(a)') 'Compiler version: ',compiler_version()
+                        write(*,'(a)') 'Compiler options: ',compiler_options()
+                        stop
+                    endif
+                    !
                     ! help
                     !
                     pos(1) = index(argtmp,"--help")
@@ -214,6 +224,7 @@ module BabelStreamUtil
                         write(*,'(a)') "      --csv                Output as csv table"
                         write(*,'(a)') "      --mibibytes          Use MiB=2^20 for bandwidth calculation (default MB=10^6)"
                         write(*,'(a)') "      --gigs               Use GiB=2^30 or GB=10^9 instead of MiB/MB"
+                        write(*,'(a)') "      --compiler-info      Print information about compiler and flags, then exit."
                         stop
                     endif
                 end if
