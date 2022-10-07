@@ -1,5 +1,5 @@
 FC       = lfortran
-FCFLAGS  = --cpp
+FCFLAGS  = --cpp --no-warnings
 
 ARCH=$(shell uname -m)
 
