@@ -80,7 +80,9 @@ endif
 
 all: BabelStream.$(COMPILER).$(IMPLEMENTATION)
 
-BabelStream.$(COMPILER).$(IMPLEMENTATION): main.F90 $(IMPLEMENTATION_OBJECT)
+main.o: $(IMPLEMENTATION_OBJECT)
+
+BabelStream.$(COMPILER).$(IMPLEMENTATION): main.o $(IMPLEMENTATION_OBJECT)
 	$(FC) $(FCFLAGS) $^ BabelStreamTypes.o -o $@
 
 BabelStreamTypes.o BabelStreamTypes.mod: BabelStreamTypes.F90
