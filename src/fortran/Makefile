@@ -12,6 +12,8 @@ else ifeq ($(COMPILER),cray)
     include make.inc.cray
 else ifeq ($(COMPILER),fj)
     include make.inc.fj
+else ifeq ($(COMPILER),lfortran)
+    include make.inc.lfortran
 else
     $(info Set COMPILER={nvhpc,oneapi,amd,arm,cray,fj,gcc}. Default is gcc.)
     include make.inc.gcc
@@ -78,7 +80,9 @@ endif
 
 all: BabelStream.$(COMPILER).$(IMPLEMENTATION)
 
-BabelStream.$(COMPILER).$(IMPLEMENTATION): main.F90 $(IMPLEMENTATION_OBJECT)
+main.o: $(IMPLEMENTATION_OBJECT)
+
+BabelStream.$(COMPILER).$(IMPLEMENTATION): main.o $(IMPLEMENTATION_OBJECT)
 	$(FC) $(FCFLAGS) $^ BabelStreamTypes.o -o $@
 
 BabelStreamTypes.o BabelStreamTypes.mod: BabelStreamTypes.F90
