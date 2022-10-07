@@ -1,6 +1,7 @@
 module BabelStreamUtil
     use, intrinsic :: ISO_Fortran_env
     use BabelStreamTypes
+    use SequentialStream
 
     implicit none
 
@@ -32,7 +33,7 @@ module BabelStreamUtil
           implicit none
           real(kind=REAL64) ::  t
           integer(kind=INT64) :: c, r
-          call system_clock(count = c, count_rate = r)
+          call system_clock(c, r, 1000_8)
           t = real(c,REAL64) / real(r,REAL64)
 #endif
         end function get_wtime
@@ -67,123 +68,8 @@ module BabelStreamUtil
             integer :: i, argc
             integer :: arglen,err,pos(2)
             character(len=64) :: argtmp
-            argc = command_argument_count()
-            do i=1,argc
-                call get_command_argument(i,argtmp,arglen,err)
-                if (err.eq.0) then
-                    !
-                    ! list devices
-                    !
-                    pos(1) = index(argtmp,"--list")
-                    if (pos(1).eq.1) then
-                        call list_devices()
-                        stop
-                    endif
-                    !
-                    ! set device number
-                    !
-                    pos(1) = index(argtmp,"--device")
-                    if (pos(1).eq.1) then
-                        if (i+1.gt.argc) then
-                            print*,'You failed to provide a value for ',argtmp,'SHIT'
-                            stop
-                        else
-                            call get_command_argument(i+1,argtmp,arglen,err)
-                            block
-                                integer :: dev
-                                read(argtmp,'(i15)') dev
-                                call set_device(dev)
-                            end block
-                        endif
-                        cycle
-                    endif
-                    !
-                    ! array size
-                    !
-                    pos(1) = index(argtmp,"--arraysize")
-                    pos(2) = index(argtmp,"-s")
-                    if (any(pos(:).eq.1) ) then
-                        if (i+1.gt.argc) then
-                            print*,'You failed to provide a value for ',argtmp,'ASS'
-                        else
-                            call get_command_argument(i+1,argtmp,arglen,err)
-                            read(argtmp,'(i15)') array_size
-                        endif
-                        cycle
-                    endif
-                    !
-                    ! number of iterations
-                    !
-                    pos(1) = index(argtmp,"--numtimes")
-                    pos(2) = index(argtmp,"-n")
-                    if (any(pos(:).eq.1) ) then
-                        if (i+1.gt.argc) then
-                            print*,'You failed to provide a value for ',argtmp
-                        else
-                            call get_command_argument(i+1,argtmp,arglen,err)
-                            read(argtmp,'(i15)') num_times
-                            if (num_times.lt.2) then
-                                write(*,'(a)') "Number of times must be 2 or more"
-                                stop
-                            end if
-                        endif
-                        cycle
-                    endif
-                    !
-                    ! precision
-                    !
-                    pos(1) = index(argtmp,"--float")
-                    if (pos(1).eq.1) then
-                        write(*,'(a46,a39)') "Sorry, you have to recompile with -DUSE_FLOAT ", &
-                                             "to run BabelStream in single precision."
-                        stop
-                    endif
-                    !
-                    ! selection (All, Triad, Nstream)
-                    !
-                    pos(1) = index(argtmp,"--triad-only")
-                    if (pos(1).eq.1) then
-                        selection = 2
-                        cycle
-                    endif
-                    pos(1) = index(argtmp,"--nstream-only")
-                    if (pos(1).eq.1) then
-                        selection = 3
-                        cycle
-                    endif
-                    !
-                    ! CSV
-                    !
-                    pos(1) = index(argtmp,"--csv")
-                    if (pos(1).eq.1) then
-                        csv = .true.
-                        write(*,'(a39)') "Sorry, CSV support isn't available yet."
-                        stop
-                    endif
-                    !
-                    ! units
-                    !
-                    pos(1) = index(argtmp,"--mibibytes")
-                    if (pos(1).eq.1) then
-                        mibibytes = .true.
-                        cycle
-                    endif
-                    !
-                    ! help
-                    !
-                    pos(1) = index(argtmp,"--help")
-                    pos(2) = index(argtmp,"-h")
-                    if (any(pos(:).eq.1) ) then
-                        call get_command_argument(0,argtmp,arglen,err)
-                        write(*,'(a7,a,a10)') "Usage: ", trim(argtmp), " [OPTIONS]"
-                        write(*,'(a)') "Options:"
-                        write(*,'(a)') "  -h  --help               Print the message"
-                        write(*,'(a)') "  -s  --arraysize  SIZE    Use SIZE elements in the array"
-                        write(*,'(a)') "  -n  --numtimes   NUM     Run the test NUM times (NUM >= 2)"
-                        stop
-                    endif
-                end if
-            end do
+            !argc = command_argument_count()
+            argc = 0
         end subroutine parseArguments
 
         subroutine run_all(timings, summ)
@@ -445,7 +331,7 @@ program BabelStream
     end block
     write(*,'(a11,a6)') 'Precision: ',ADJUSTL(StreamRealName)
 
-    element_size = storage_size(real(0,kind=REAL64)) / 8
+    element_size = 8 !storage_size(real(0,kind=REAL64)) / 8
     if (mibibytes) then
         scaling = 2.0d0**(-20)
         label   = "MiB"
