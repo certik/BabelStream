@@ -12,6 +12,8 @@ else ifeq ($(COMPILER),cray)
     include make.inc.cray
 else ifeq ($(COMPILER),fj)
     include make.inc.fj
+else ifeq ($(COMPILER),lfortran)
+    include make.inc.lfortran
 else
     $(info Set COMPILER={nvhpc,oneapi,amd,arm,cray,fj,gcc}. Default is gcc.)
     include make.inc.gcc
